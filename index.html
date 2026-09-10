@@ -282,7 +282,7 @@
     <h1 class="font-display">주간 카테고리 증감 리포트</h1>
     <div class="meta">
       <span>비교 <b class="mono">W35(8/24~8/30)</b> vs <b class="mono">W36(8/31~9/6)</b></span>
-      <span>갱신일 <b class="mono">2026-09-08</b></span>
+      <span>갱신일 <b class="mono">2026-09-10</b></span>
     </div>
   </header>
 
@@ -300,7 +300,7 @@
       <b>이 비교는 문자 그대로의 "이번 주 vs 지난 주"가 아니라, 지금 데이터로 완성된 가장 최근 두 주(W35 vs W36)입니다.</b>
       <div class="sub">
         <span class="status info" style="margin-right:6px;">참고치</span>
-        이번 주(9/7~9/13)는 아직 진행 중입니다 — 2026-09-08 기준 8건 누적(교환·환전 6·광고 1·계정·로그인 1). <b>주가 끝나지 않아 정식 비교에는 넣지 않았습니다.</b> 9/14 이후 W36 vs W37로 다시 갱신할 예정입니다.
+        이번 주(9/7~9/13)는 아직 진행 중입니다 — 2026-09-10 기준 50건 누적(교환·환전 30·계정·로그인 7·광고 6·혜택 3·앱 오류 2·일반문의 2). <b>주가 끝나지 않아 정식 비교에는 넣지 않았습니다.</b> 9/14 이후 W36 vs W37로 다시 갱신할 예정입니다.
       </div>
     </div>
   </div>
@@ -387,25 +387,6 @@
     </div>
   </section>
 
-  <section class="card">
-    <div class="section-head" id="checklistToggle" style="cursor:pointer;">
-      <h2>데이터 품질 체크리스트</h2>
-      <div class="note" id="checklistToggleLabel">▸ 펼치기</div>
-    </div>
-    <div class="checklist" id="checklist" hidden></div>
-  </section>
-
-  <section class="card">
-    <div class="section-head"><h2>다음 단계</h2></div>
-    <div class="steps">
-      <div class="step done"><span class="tag">P0</span><span>문서화 완료 — PRD·TRD·DESIGN·PLAN·CATEGORY_TAXONOMY</span></div>
-      <div class="step done"><span class="tag">P1</span><span>데이터 확보·탐색 완료 — 컬럼·기간·일별 추이 확인, 이번 주 데이터 없음(블로커)을 "증감 계산 스킵"으로 해결.</span></div>
-      <div class="step done"><span class="tag">P2</span><span>카테고리 분류 완료 — 8월 514건 + 9월 227건 전부 대/중/소분류 판단, 샘플 53건 사람 검수(오분류 2건 발견·수정).</span></div>
-      <div class="step done"><span class="tag">P3</span><span>주간 증감 비교 완료 — W35(8/24~8/30) vs W36(8/31~9/6). 광고 +832%(19→177건)로 최대 증가.</span></div>
-      <div class="step done"><span class="tag">P4</span><span>이 리포트 — 같은 링크로 게시. 문자 그대로의 "이번 주(9/7~)"가 끝나면(9/13 이후) 진짜 최신 주로 다시 갱신 예정입니다.</span></div>
-    </div>
-  </section>
-
   <footer>
     원본 문서: <code>docs/PRD.md</code> · <code>docs/TRD.md</code> · <code>docs/PLAN.md</code> · <code>docs/CATEGORY_TAXONOMY.md</code> · <code>docs/LOG.md</code><br>
     분류 결과 파일: <code>voc/20260801-20260831_classified.csv</code>, <code>voc/20260901-20260906_classified.csv</code> (원본은 그대로 보존, 사본에 카테고리만 채움)<br>
@@ -445,25 +426,13 @@
 
   // W37 (current, incomplete week) - reference values only, not part of the W35/W36 comparison
   const w37 = [
-    {key:"cat-5", name:"교환·환전", count:6},
-    {key:"cat-1", name:"광고", count:1},
-    {key:"cat-4", name:"계정·로그인", count:1}
+    {key:"cat-5", name:"교환·환전", count:30},
+    {key:"cat-4", name:"계정·로그인", count:7},
+    {key:"cat-1", name:"광고", count:6},
+    {key:"cat-8", name:"혜택", count:3},
+    {key:"cat-6", name:"앱 오류", count:2},
+    {key:"cat-7", name:"일반문의", count:2}
   ].sort((a,b)=>b.count-a.count);
-  const checklist = [
-    ["good","컬럼 구조","created_at, content, large_category, medium_category, small_category, memo, uid — 7개 컬럼 확인. 분류 컬럼 3종이 taxonomy 이름으로 이미 준비됨."],
-    ["good","날짜 형식","YYYY-MM-DD H:MM(초 없음), 514건 전부 파싱 성공. 범위 2026-08-01 00:15 ~ 08-31 21:10."],
-    ["good","content 형식","\"제목 | 본문\" 구분자 100% 일치(514건 중 예외 0건)."],
-    ["good","분류 구조 검증","514건 전부 존재(누락·중복 idx 없음), large_category가 taxonomy 이름 중 하나인지 확인(불일치 0건). 이후 \"혜택\" 대분류 추가로 지금은 8종 기준."],
-    ["warn","오분류 2건 발견·수정","30건 샘플 검수 중 idx330(계정·로그인→앱 오류로 정정), idx424(catch-all→교환·환전로 정정) 발견. 전수 검증은 아님 — 남은 484건 중에도 비슷한 오류가 있을 수 있음."],
-    ["warn","분류 기준 미확정 이슈","\"광고가 안 나와서 다른 보상을 못 받는\" 것처럼 증상과 근본 원인의 카테고리가 다른 경우 우선순위 규칙이 없음(TRD 결정 N) — 배치마다 판단이 갈릴 수 있음."],
-    ["info","catch-all 사용","\"일반문의 > 기타 > 단순문의\"로 분류된 건 18건(3.5%) — taxonomy에 새 카테고리를 추가해야 할 만큼 많지는 않음."],
-    ["warn","완전 중복","동일 시각·내용·uid 조합 2건 — 미미한 수준, 별도 처리 불필요."],
-    ["warn","PII 노출 발견","3건이 CS 회신 인용 이메일 스레드(Original Message 포함)이며 고객 실명이 마스킹 없이 노출됨 → PRD 결정 D(원문 미노출) 방침을 그대로 유지하는 근거로 반영."],
-    ["warn","8/14 · 9/3 이상치","각각 87건·144건이 광고 관련으로 집중된 별개의 서비스 이슈로 추정 — 주간 비교에서 트렌드로 오인하지 않도록 원인을 구분해 표시함."],
-    ["good","9월 분류 QA","227건 중 23건 샘플 검수, 명백한 오분류 없음(프롬프트에 추가한 광고/기능 구분 규칙 덕분으로 보임)."],
-    ["good","\"혜택\" 대분류 추가","버니로또·꼬마어부지피 등 개별 기능 문의를 위한 대분류 신규 추가(중분류 10개). \"광고가 원인이면 광고, 기능 고유 문제면 혜택\" 규칙으로 741건 중 17건 재분류."],
-    ["info","taxonomy 보강 후보 2건 (남음)","사기성 광고, 지급액 불일치(완전 누락 아님) — 현재도 가까운 카테고리로 임시 분류 중, 각 1건뿐이라 급하지 않음."]
-  ];
   const categories = [
     {key:"cat-1", name:"광고", total:283, medium:[
       {name:"시청 불가", count:207, small:[["로딩 실패",204],["특정 매체 오류",3]]},
@@ -643,22 +612,7 @@
     wt.appendChild(tr);
   });
 
-  // ---- Checklist ----
-  const cl = document.getElementById("checklist");
-  const statusLabel = {good:"양호", warn:"주의", info:"정보"};
-  checklist.forEach(c=>{
-    const [status, title, detail] = c;
-    const row = document.createElement("div");
-    row.className = "check-row";
-    row.innerHTML = "<span class=\"status "+status+"\">"+statusLabel[status]+"</span>"+
-      "<span class=\"txt\"><b>"+title+"</b><div class=\"d\">"+detail+"</div></span>";
-    cl.appendChild(row);
-  });
-
-  document.getElementById("checklistToggle").addEventListener("click", ()=>{
-    cl.hidden = !cl.hidden;
-    document.getElementById("checklistToggleLabel").textContent = cl.hidden ? "▸ 펼치기" : "▾ 접기";
-  });
+  // (공개용 리포트: 데이터 품질 체크리스트·다음 단계 섹션은 의도적으로 뺐음 — checklist 배열은 더 이상 쓰이지 않음)
 
   // ---- Category distribution table ----
   const catTable = document.getElementById("catTable");
