@@ -1,0 +1,730 @@
+<title>주간 VOC 증감 리포트</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gothic+A1:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #EEF0F2;
+    --surface: #FFFFFF;
+    --surface-2: #F4F6F8;
+    --ink-1: #161B22;
+    --ink-2: #4B5563;
+    --ink-3: #8791A0;
+    --border: rgba(22,27,34,0.12);
+    --border-strong: rgba(22,27,34,0.20);
+    --accent: #8A5E0F;
+    --accent-fill: #E7A83D;
+    --accent-soft: #FBEFD9;
+    --accent-soft-border: rgba(154,107,18,0.28);
+
+    --chart-surface: #fcfcfb;
+    --chart-ink-1: #0b0b0b;
+    --chart-ink-2: #52514e;
+    --chart-ink-3: #898781;
+    --chart-grid: #e1e0d9;
+    --chart-base: #c3c2b7;
+
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+
+    --cat-1: #2a78d6; /* 광고 */
+    --cat-2: #eb6834; /* 코인·포인트 */
+    --cat-3: #1baf7a; /* 걸음수 */
+    --cat-4: #eda100; /* 계정·로그인 */
+    --cat-5: #e87ba4; /* 교환·환전 */
+    --cat-6: #008300; /* 앱 오류 */
+    --cat-7: #4a3aa7; /* 일반문의 */
+    --cat-8: #e34948; /* 혜택 */
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #0E1116;
+      --surface: #161A21;
+      --surface-2: #1B2029;
+      --ink-1: #F3F5F7;
+      --ink-2: #B7C0CC;
+      --ink-3: #7C8698;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.20);
+      --accent: #E7B455;
+      --accent-fill: #D89A2E;
+      --accent-soft: rgba(231,180,85,0.12);
+      --accent-soft-border: rgba(231,180,85,0.30);
+
+      --chart-surface: #1a1a19;
+      --chart-ink-1: #ffffff;
+      --chart-ink-2: #c3c2b7;
+      --chart-ink-3: #898781;
+      --chart-grid: #2c2c2a;
+      --chart-base: #383835;
+
+      --cat-1: #3987e5; --cat-2: #d95926; --cat-3: #199e70; --cat-4: #c98500;
+      --cat-5: #d55181; --cat-6: #008300; --cat-7: #9085e9; --cat-8: #e66767;
+    }
+    :root:not([data-theme="light"]) .status.warn{ color: var(--warning); }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #0E1116;
+    --surface: #161A21;
+    --surface-2: #1B2029;
+    --ink-1: #F3F5F7;
+    --ink-2: #B7C0CC;
+    --ink-3: #7C8698;
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.20);
+    --accent: #E7B455;
+    --accent-fill: #D89A2E;
+    --accent-soft: rgba(231,180,85,0.12);
+    --accent-soft-border: rgba(231,180,85,0.30);
+
+    --chart-surface: #1a1a19;
+    --chart-ink-1: #ffffff;
+    --chart-ink-2: #c3c2b7;
+    --chart-ink-3: #898781;
+    --chart-grid: #2c2c2a;
+    --chart-base: #383835;
+
+    --cat-1: #3987e5; --cat-2: #d95926; --cat-3: #199e70; --cat-4: #c98500;
+    --cat-5: #d55181; --cat-6: #008300; --cat-7: #9085e9; --cat-8: #e66767;
+  }
+  :root[data-theme="dark"] .status.warn{ color: var(--warning); }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink-1);
+    font-family: "Gothic A1", "Noto Sans KR", system-ui, sans-serif;
+  }
+  .page{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  h1,h2,h3{ text-wrap: balance; margin: 0; }
+  .font-display{ font-family: "Gowun Batang", "Noto Serif KR", serif; }
+  .mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .eyebrow{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Masthead */
+  .masthead{
+    border-bottom: 1px solid var(--border-strong);
+    padding-bottom: 24px;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .masthead h1{ font-size: 32px; font-weight: 700; line-height: 1.25; }
+  .masthead .meta{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+  .masthead .meta b{ color: var(--ink-1); font-weight: 600; }
+
+  /* Status banner */
+  .banner{
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display:flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .banner .pill{
+    flex: none;
+    background: var(--good);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-top: 2px;
+  }
+  .banner .body{ font-size: 14.5px; line-height: 1.6; color: var(--ink-1); }
+  .banner .body b{ font-weight: 700; }
+  .banner .body .sub{ color: var(--ink-2); font-size: 13px; margin-top: 4px; }
+
+  /* Section shell */
+  section.card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+  }
+  .section-head{
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .section-head h2{ font-size: 17px; font-weight: 700; }
+  .section-head .note{ font-size: 12.5px; color: var(--ink-3); }
+
+  /* Stat tiles */
+  .stats-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .stat{
+    background: var(--surface);
+    padding: 18px 18px;
+    display:flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stat .label{ font-size: 12px; color: var(--ink-3); }
+  .stat .value{ font-size: 26px; font-weight: 600; }
+  .stat .value.warn{ color: var(--critical); }
+  .stat .sub{ font-size: 12px; color: var(--ink-2); }
+  @media (max-width: 640px){ .stats-row{ grid-template-columns: 1fr; } }
+
+  /* Chart */
+  .chart-wrap{ position: relative; }
+  svg.chart{ width: 100%; height: auto; display:block; overflow: visible; }
+  .bar-hit{ fill: transparent; cursor: pointer; }
+  .tooltip{
+    position: absolute;
+    pointer-events: none;
+    background: var(--ink-1);
+    color: var(--bg);
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 7px 10px;
+    border-radius: 7px;
+    transform: translate(-50%, calc(-100% - 10px));
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    z-index: 5;
+  }
+  .tooltip b{ font-weight: 700; }
+  .legend-row{ display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:12.5px; color: var(--ink-2); }
+  .legend-row .item{ display:flex; align-items:center; gap:6px; }
+  .legend-row .swatch{ width:10px; height:10px; border-radius:2px; }
+
+  /* Week table */
+  table{ width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .table-wrap{ overflow-x: auto; }
+  th, td{ text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th{ font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); font-weight: 600; }
+  td.num{ font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; text-align: right; }
+  td.note{ white-space: normal; color: var(--ink-2); }
+  tr.spike td{ color: var(--critical); }
+  tr.partial td{ color: var(--ink-3); }
+
+  /* Checklist */
+  .checklist{ display:flex; flex-direction:column; }
+  .check-row{
+    display:flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .check-row:last-child{ border-bottom:none; }
+  .check-row .status{
+    flex: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-top: 1px;
+  }
+  .status.good{ background: rgba(12,163,12,0.12); color: var(--good); }
+  .status.warn{ background: rgba(250,178,25,0.16); color: #9a6b00; }
+  .status.info{ background: var(--surface-2); color: var(--ink-2); }
+  .check-row .txt b{ font-weight: 600; }
+  .check-row .txt .d{ color: var(--ink-2); font-size: 13px; }
+
+  /* Next steps */
+  .steps{ display:flex; flex-direction:column; gap:10px; }
+  .step{ display:flex; gap:12px; font-size:14px; line-height:1.6; }
+  .step .tag{
+    flex:none; font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    color: var(--ink-3); padding: 2px 0; width: 34px;
+  }
+  .step.done .tag{ color: var(--good); }
+  .step.wait .tag{ color: var(--accent); }
+
+  footer{ font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--border); padding-top: 16px; line-height:1.7; }
+  footer code{ font-family:"IBM Plex Mono",monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">VOC 자동 카테고리 분류 · P3 주간 비교 완료</div>
+    <h1 class="font-display">주간 카테고리 증감 리포트</h1>
+    <div class="meta">
+      <span>비교 <b class="mono">W35(8/24~8/30)</b> vs <b class="mono">W36(8/31~9/6)</b></span>
+      <span>갱신일 <b class="mono">2026-09-08</b></span>
+    </div>
+  </header>
+
+  <div class="banner" style="background:rgba(208,59,59,0.08); border-color:rgba(208,59,59,0.28);">
+    <span class="pill" style="background:var(--critical);">최대 증가</span>
+    <div class="body">
+      <b>"광고" 문의가 지난 주 대비 가장 크게 늘었습니다 — 19건 → 177건 (+832%)</b>
+      <div class="sub">9/3(수) 하루에만 144건(그 주 전체의 61%)이 몰렸습니다. 샘플 확인 결과 "고양이 빵집/오늘의 걸음" 미니게임에서 광고는 끝까지 보는데 다음 단계로 안 넘어가는 버그로 추정됩니다(8/14 장애는 광고 자체가 안 뜨는 문제였어서 별개 이슈로 보입니다).</div>
+    </div>
+  </div>
+
+  <div class="banner" style="background:var(--surface-2); border-color:var(--border-strong);">
+    <span class="pill" style="background:var(--ink-2);">범위 안내</span>
+    <div class="body">
+      <b>이 비교는 문자 그대로의 "이번 주 vs 지난 주"가 아니라, 지금 데이터로 완성된 가장 최근 두 주(W35 vs W36)입니다.</b>
+      <div class="sub">
+        <span class="status info" style="margin-right:6px;">참고치</span>
+        이번 주(9/7~9/13)는 아직 진행 중입니다 — 2026-09-08 기준 8건 누적(교환·환전 6·광고 1·계정·로그인 1). <b>주가 끝나지 않아 정식 비교에는 넣지 않았습니다.</b> 9/14 이후 W36 vs W37로 다시 갱신할 예정입니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="label">W36 총 문의</div>
+      <div class="value mono">235<span style="font-size:14px;color:var(--ink-3);">건</span></div>
+      <div class="sub">W35(그 전 주)는 80건 — 약 3배</div>
+    </div>
+    <div class="stat">
+      <div class="label">가장 많이 늘어난 카테고리</div>
+      <div class="value mono warn">광고 +158</div>
+      <div class="sub">19건 → 177건 (+832%)</div>
+    </div>
+    <div class="stat">
+      <div class="label">9/3 급증일</div>
+      <div class="value mono warn">144<span style="font-size:14px;color:var(--ink-3);">건</span></div>
+      <div class="sub">그 주(W36) 전체의 61% · 미니게임 진행 버그 추정</div>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>대분류별 증감 — W35 vs W36</h2>
+      <div class="note">증가폭 큰 순 · 표본 10건 미만은 %보다 건수로 해석 권장</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>대분류</th><th class="num">W35</th><th class="num">W36</th><th class="num">증감</th><th class="num">증감률</th></tr>
+        </thead>
+        <tbody id="deltaTable"></tbody>
+      </table>
+    </div>
+    <div class="legend-row" style="margin-top:14px; align-items:center;">
+      <span class="status info" style="flex:none;">참고치</span>
+      <span>이번 주(W37, 9/7~9/13 · 진행 중, 2026-09-08 기준) — <span id="w37Breakdown"></span></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>8월 전체 분포 (참고용, 대분류 8종)</h2>
+      <div class="note">2026-08-01~08-31, 514건 · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>대분류</th><th class="num">건수</th><th class="num">비중</th><th></th></tr>
+        </thead>
+        <tbody id="catTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>일별 문의 추이 — 2026년 8월 ~ 9월 첫 주</h2>
+      <div class="note">막대 위 음영은 ISO 주(월~일) 경계</div>
+    </div>
+    <div class="chart-wrap">
+      <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 일별 VOC 문의 건수 추이"></svg>
+      <div class="tooltip" id="tooltip" hidden></div>
+    </div>
+    <div class="legend-row">
+      <span class="item"><span class="swatch" style="background:var(--chart-ink-3)"></span>일반</span>
+      <span class="item"><span class="swatch" style="background:var(--critical)"></span>이상치 — 8/14(87건, 로딩 실패) · 9/3(144건, 진행 버그)</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>ISO 주별 집계 (월요일 시작)</h2>
+      <div class="note">TRD 결정 F(배치 크기) 검증용</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>주차</th><th>기간</th><th class="num">건수</th><th>비고</th></tr>
+        </thead>
+        <tbody id="weekTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head" id="checklistToggle" style="cursor:pointer;">
+      <h2>데이터 품질 체크리스트</h2>
+      <div class="note" id="checklistToggleLabel">▸ 펼치기</div>
+    </div>
+    <div class="checklist" id="checklist" hidden></div>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><h2>다음 단계</h2></div>
+    <div class="steps">
+      <div class="step done"><span class="tag">P0</span><span>문서화 완료 — PRD·TRD·DESIGN·PLAN·CATEGORY_TAXONOMY</span></div>
+      <div class="step done"><span class="tag">P1</span><span>데이터 확보·탐색 완료 — 컬럼·기간·일별 추이 확인, 이번 주 데이터 없음(블로커)을 "증감 계산 스킵"으로 해결.</span></div>
+      <div class="step done"><span class="tag">P2</span><span>카테고리 분류 완료 — 8월 514건 + 9월 227건 전부 대/중/소분류 판단, 샘플 53건 사람 검수(오분류 2건 발견·수정).</span></div>
+      <div class="step done"><span class="tag">P3</span><span>주간 증감 비교 완료 — W35(8/24~8/30) vs W36(8/31~9/6). 광고 +832%(19→177건)로 최대 증가.</span></div>
+      <div class="step done"><span class="tag">P4</span><span>이 리포트 — 같은 링크로 게시. 문자 그대로의 "이번 주(9/7~)"가 끝나면(9/13 이후) 진짜 최신 주로 다시 갱신 예정입니다.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    원본 문서: <code>docs/PRD.md</code> · <code>docs/TRD.md</code> · <code>docs/PLAN.md</code> · <code>docs/CATEGORY_TAXONOMY.md</code> · <code>docs/LOG.md</code><br>
+    분류 결과 파일: <code>voc/20260801-20260831_classified.csv</code>, <code>voc/20260901-20260906_classified.csv</code> (원본은 그대로 보존, 사본에 카테고리만 채움)<br>
+    검증 방법: 서브에이전트가 배치별로 분류 → 구조 검증(누락/중복/카테고리명 유효성) 통과 → 총 53건 사람 샘플 검수(8월분 오분류 2건 수정, 9월분 오분류 없음). 전수 정답 검증은 아직 없습니다.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const daily = [
+    ["08-01",23],["08-02",11],["08-03",22],["08-04",24],["08-05",28],["08-06",19],["08-07",9],
+    ["08-08",4],["08-09",6],["08-10",26],["08-11",26],["08-12",19],["08-13",33],["08-14",87],
+    ["08-15",2],["08-16",5],["08-17",10],["08-18",19],["08-19",10],["08-20",7],["08-21",16],
+    ["08-22",16],["08-23",4],["08-24",14],["08-25",13],["08-26",20],["08-27",13],["08-28",8],
+    ["08-29",6],["08-30",6],["08-31",8],
+    ["09-01",23],["09-02",32],["09-03",144],["09-04",15],["09-05",8],["09-06",5]
+  ];
+  const weeks = [
+    {w:31, range:"08-01 ~ 08-02", days:2, n:34, note:"부분 주(월요일 이전 2일치만)", cls:"partial"},
+    {w:32, range:"08-03 ~ 08-09", days:7, n:112, note:"", cls:""},
+    {w:33, range:"08-10 ~ 08-16", days:7, n:198, note:"8/14 급증(87건) 포함", cls:"spike"},
+    {w:34, range:"08-17 ~ 08-23", days:7, n:82, note:"", cls:""},
+    {w:35, range:"08-24 ~ 08-30", days:7, n:80, note:"이번 비교의 \"그 전 주\"", cls:""},
+    {w:36, range:"08-31 ~ 09-06", days:7, n:235, note:"9/3 급증(144건) 포함 — 이번 비교의 \"지난 주\"", cls:"spike"}
+  ];
+  const deltas = [
+    {key:"cat-1", name:"광고",       w35:19, w36:177},
+    {key:"cat-4", name:"계정·로그인", w35:4,  w36:10},
+    {key:"cat-3", name:"걸음수",     w35:3,  w36:5},
+    {key:"cat-5", name:"교환·환전",   w35:28, w36:28},
+    {key:"cat-8", name:"혜택",       w35:4,  w36:2},
+    {key:"cat-7", name:"일반문의",   w35:4,  w36:3},
+    {key:"cat-2", name:"코인·포인트", w35:14, w36:9},
+    {key:"cat-6", name:"앱 오류",    w35:4,  w36:1}
+  ].sort((a,b)=>(b.w36-b.w35)-(a.w36-a.w35));
+
+  // W37 (current, incomplete week) - reference values only, not part of the W35/W36 comparison
+  const w37 = [
+    {key:"cat-5", name:"교환·환전", count:6},
+    {key:"cat-1", name:"광고", count:1},
+    {key:"cat-4", name:"계정·로그인", count:1}
+  ].sort((a,b)=>b.count-a.count);
+  const checklist = [
+    ["good","컬럼 구조","created_at, content, large_category, medium_category, small_category, memo, uid — 7개 컬럼 확인. 분류 컬럼 3종이 taxonomy 이름으로 이미 준비됨."],
+    ["good","날짜 형식","YYYY-MM-DD H:MM(초 없음), 514건 전부 파싱 성공. 범위 2026-08-01 00:15 ~ 08-31 21:10."],
+    ["good","content 형식","\"제목 | 본문\" 구분자 100% 일치(514건 중 예외 0건)."],
+    ["good","분류 구조 검증","514건 전부 존재(누락·중복 idx 없음), large_category가 taxonomy 이름 중 하나인지 확인(불일치 0건). 이후 \"혜택\" 대분류 추가로 지금은 8종 기준."],
+    ["warn","오분류 2건 발견·수정","30건 샘플 검수 중 idx330(계정·로그인→앱 오류로 정정), idx424(catch-all→교환·환전로 정정) 발견. 전수 검증은 아님 — 남은 484건 중에도 비슷한 오류가 있을 수 있음."],
+    ["warn","분류 기준 미확정 이슈","\"광고가 안 나와서 다른 보상을 못 받는\" 것처럼 증상과 근본 원인의 카테고리가 다른 경우 우선순위 규칙이 없음(TRD 결정 N) — 배치마다 판단이 갈릴 수 있음."],
+    ["info","catch-all 사용","\"일반문의 > 기타 > 단순문의\"로 분류된 건 18건(3.5%) — taxonomy에 새 카테고리를 추가해야 할 만큼 많지는 않음."],
+    ["warn","완전 중복","동일 시각·내용·uid 조합 2건 — 미미한 수준, 별도 처리 불필요."],
+    ["warn","PII 노출 발견","3건이 CS 회신 인용 이메일 스레드(Original Message 포함)이며 고객 실명이 마스킹 없이 노출됨 → PRD 결정 D(원문 미노출) 방침을 그대로 유지하는 근거로 반영."],
+    ["warn","8/14 · 9/3 이상치","각각 87건·144건이 광고 관련으로 집중된 별개의 서비스 이슈로 추정 — 주간 비교에서 트렌드로 오인하지 않도록 원인을 구분해 표시함."],
+    ["good","9월 분류 QA","227건 중 23건 샘플 검수, 명백한 오분류 없음(프롬프트에 추가한 광고/기능 구분 규칙 덕분으로 보임)."],
+    ["good","\"혜택\" 대분류 추가","버니로또·꼬마어부지피 등 개별 기능 문의를 위한 대분류 신규 추가(중분류 10개). \"광고가 원인이면 광고, 기능 고유 문제면 혜택\" 규칙으로 741건 중 17건 재분류."],
+    ["info","taxonomy 보강 후보 2건 (남음)","사기성 광고, 지급액 불일치(완전 누락 아님) — 현재도 가까운 카테고리로 임시 분류 중, 각 1건뿐이라 급하지 않음."]
+  ];
+  const categories = [
+    {key:"cat-1", name:"광고", total:283, medium:[
+      {name:"시청 불가", count:207, small:[["로딩 실패",204],["특정 매체 오류",3]]},
+      {name:"재생 중단", count:34, small:[["진행 멈춤",27],["종료 버튼 미노출",6],["(미지정)",1]]},
+      {name:"보상 누락", count:23, small:[["적립 미반영",11],["(미지정)",10],["초기화 반복",2]]},
+      {name:"이용 불만", count:19, small:[["시간 과다",15],["노출 빈도 과다",2],["부적절한 소재",2]]}
+    ]},
+    {key:"cat-5", name:"교환·환전", total:103, medium:[
+      {name:"현금교환", count:57, small:[["계좌 문의",40],["미입금",12],["(미지정)",5]]},
+      {name:"교환 불가", count:24, small:[["품절",17],["(미지정)",7]]},
+      {name:"상품권", count:18, small:[["(미지정)",10],["등록 불가",7],["유효기간 만료",1]]},
+      {name:"암호화폐", count:3, small:[["(미지정)",2],["거래소 연동",1]]},
+      {name:"(세부 미지정)", count:1, small:[["(미지정)",1]]}
+    ]},
+    {key:"cat-4", name:"계정·로그인", total:42, medium:[
+      {name:"로그인 오류", count:20, small:[["(미지정)",12],["가입화면 반복",4],["인증 실패",4]]},
+      {name:"계정 변경", count:20, small:[["기기변경",15],["정보 수정",5]]},
+      {name:"탈퇴", count:2, small:[["(미지정)",2]]}
+    ]},
+    {key:"cat-2", name:"코인·포인트", total:33, medium:[
+      {name:"소멸", count:21, small:[["복구 요청",14],["기준 문의",7]]},
+      {name:"적립 누락", count:6, small:[["(미지정)",4],["미션·퀴즈",2]]},
+      {name:"잔액 변동", count:6, small:[["원인 문의",6]]}
+    ]},
+    {key:"cat-7", name:"일반문의", total:19, medium:[
+      {name:"기타", count:12, small:[["단순문의",12]]},
+      {name:"건의사항", count:7, small:[["개선요청",7]]}
+    ]},
+    {key:"cat-8", name:"혜택", total:16, medium:[
+      {name:"매일받는연금복권", count:4, small:[["지급내역 확인불가",2],["추첨 누락",1],["수령방법 문의",1]]},
+      {name:"버니로또", count:4, small:[["당첨금 미지급",3],["응모 누락",1]]},
+      {name:"버니상회(쇼핑요정지피)", count:2, small:[["사용법 문의",1],["주문·취소 문의",1]]},
+      {name:"번개발전소", count:2, small:[["점검·소멸 문의",1],["보상 미지급",1]]},
+      {name:"지피의하루", count:2, small:[["알림 오류",1],["보상 미지급",1]]},
+      {name:"꼬마어부지피", count:1, small:[["진행 오류",1]]},
+      {name:"오늘의퀴즈", count:1, small:[["정답보상 미지급",1]]}
+    ]},
+    {key:"cat-3", name:"걸음수", total:12, medium:[
+      {name:"측정 오류", count:6, small:[["미반영",4],["초기화",1],["(미지정)",1]]},
+      {name:"보상 누락", count:3, small:[["미지급",3]]},
+      {name:"연동 오류", count:3, small:[["삼성헬스 연동",2],["(미지정)",1]]}
+    ]},
+    {key:"cat-6", name:"앱 오류", total:6, medium:[
+      {name:"실행 오류", count:4, small:[["화면 멈춤",4]]},
+      {name:"성능 저하", count:2, small:[["(미지정)",2]]}
+    ]}
+  ];
+  const totalAll = categories.reduce((s,c)=>s+c.total,0);
+  const maxCat = Math.max(...categories.map(c=>c.total));
+
+  // ---- Daily bar chart ----
+  const svg = document.getElementById("dailyChart");
+  const ns = "http://www.w3.org/2000/svg";
+  const W = 760, H = 250;
+  const padL = 34, padR = 10, padT = 30, padB = 26;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const maxVal = 150;
+  const n = daily.length;
+  const slot = plotW / n;
+  const barW = Math.max(6, slot - 6);
+
+  function y(v){ return padT + plotH - (v/maxVal)*plotH; }
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // week bands
+  const weekBounds = [];
+  { let dayIdx = 0;
+    weeks.forEach(wk=>{
+      weekBounds.push({start: dayIdx, len: wk.days, w: wk.w});
+      dayIdx += wk.days;
+    });
+  }
+  weekBounds.forEach((b,i)=>{
+    if (i % 2 === 1){
+      svg.appendChild(el("rect", {
+        x: padL + b.start*slot, y: padT - 14, width: b.len*slot, height: plotH + 14,
+        fill: "var(--surface-2)"
+      }));
+    }
+    const lbl = el("text", {
+      x: padL + b.start*slot + (b.len*slot)/2, y: padT - 18,
+      "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"
+    });
+    lbl.textContent = "W"+b.w;
+    svg.appendChild(lbl);
+  });
+
+  // gridlines
+  [30,60,90,120].forEach(v=>{
+    svg.appendChild(el("line", {x1: padL, x2: W-padR, y1: y(v), y2: y(v), stroke:"var(--chart-grid)", "stroke-width":"1"}));
+    const t = el("text", {x: padL-6, y: y(v)+3, "text-anchor":"end", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"});
+    t.textContent = v;
+    svg.appendChild(t);
+  });
+  // baseline
+  svg.appendChild(el("line", {x1:padL, x2:W-padR, y1:y(0), y2:y(0), stroke:"var(--chart-base)", "stroke-width":"1"}));
+
+  const tooltip = document.getElementById("tooltip");
+  const wrap = document.querySelector(".chart-wrap");
+
+  daily.forEach((d,i)=>{
+    const [label, val] = d;
+    const x = padL + i*slot + (slot-barW)/2;
+    const isSpike = val >= 60;
+    const bar = el("rect", {
+      x: x, y: y(val), width: barW, height: y(0)-y(val),
+      rx: 2, fill: isSpike ? "var(--critical)" : "var(--chart-ink-3)"
+    });
+    svg.appendChild(bar);
+
+    if (isSpike){
+      const lbl = el("text", {x: x+barW/2, y: y(val)-8, "text-anchor":"middle", "font-size":"10", "font-weight":"700", fill:"var(--critical)", "font-family":"IBM Plex Mono, monospace"});
+      lbl.textContent = val;
+      svg.appendChild(lbl);
+    }
+
+    if ((i % 5 === 0 && i < n-3) || i === n-1){
+      const t = el("text", {x: x+barW/2, y: H-6, "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"});
+      t.textContent = label;
+      svg.appendChild(t);
+    }
+
+    const hit = el("rect", {x: padL + i*slot, y: padT-14, width: slot, height: plotH+14, class:"bar-hit"});
+    let spikeNote = "";
+    if (label === "08-14") spikeNote = "<br>광고 자체가 안 뜸(로딩 실패) — 이상치";
+    if (label === "09-03") spikeNote = "<br>광고는 보는데 다음 단계 진행 안 됨 — 이상치";
+    hit.addEventListener("mouseenter", ()=>{
+      tooltip.hidden = false;
+      tooltip.innerHTML = "<b>2026-"+label+"</b> · "+val+"건" + (isSpike ? spikeNote : "");
+    });
+    hit.addEventListener("mousemove",(e)=>{
+      const r = wrap.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - r.left) + "px";
+      tooltip.style.top = (e.clientY - r.top) + "px";
+    });
+    hit.addEventListener("mouseleave", ()=>{ tooltip.hidden = true; });
+    svg.appendChild(hit);
+  });
+
+  // ---- Delta table (W35 vs W36) ----
+  const dt = document.getElementById("deltaTable");
+  deltas.forEach(d=>{
+    const diff = d.w36 - d.w35;
+    const sign = diff > 0 ? "+" : "";
+    const pctText = d.w35 === 0 ? "신규" : (sign + Math.round((diff/d.w35)*100) + "%");
+    const smallSample = d.w35 < 10 && d.w36 < 10;
+    const tr = document.createElement("tr");
+    const diffColor = diff > 0 ? "var(--critical)" : (diff < 0 ? "var(--chart-ink-3)" : "var(--ink-3)");
+    tr.innerHTML =
+      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+d.key+")\"></span></td>"+
+      "<td><b>"+d.name+"</b></td>"+
+      "<td class=\"num\">"+d.w35+"건</td>"+
+      "<td class=\"num\">"+d.w36+"건</td>"+
+      "<td class=\"num\" style=\"color:"+diffColor+";font-weight:700;\">"+sign+diff+"</td>"+
+      "<td class=\"num\" style=\"color:"+diffColor+";\">"+pctText+(smallSample?" <span style=\"color:var(--ink-3);font-weight:400;\">(소표본)</span>":"")+"</td>";
+    dt.appendChild(tr);
+  });
+
+  // ---- W37 reference-value breakdown ----
+  document.getElementById("w37Breakdown").innerHTML = w37.map(w=>
+    "<span style=\"display:inline-flex;align-items:center;gap:5px;margin-right:14px;\">"+
+      "<span class=\"dot\" style=\"display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--"+w.key+")\"></span>"+
+      "<b class=\"mono\" style=\"color:var(--ink-1);\">"+w.count+"</b>건 · "+w.name+
+    "</span>"
+  ).join("");
+
+  // ---- Week table ----
+  const wt = document.getElementById("weekTable");
+  weeks.forEach(w=>{
+    const tr = document.createElement("tr");
+    if (w.cls) tr.className = w.cls;
+    tr.innerHTML = "<td class=\"mono\">W"+w.w+"</td><td class=\"mono\">"+w.range+"</td><td class=\"num\">"+w.n+"건</td><td class=\"note\">"+(w.note||"—")+"</td>";
+    wt.appendChild(tr);
+  });
+
+  // ---- Checklist ----
+  const cl = document.getElementById("checklist");
+  const statusLabel = {good:"양호", warn:"주의", info:"정보"};
+  checklist.forEach(c=>{
+    const [status, title, detail] = c;
+    const row = document.createElement("div");
+    row.className = "check-row";
+    row.innerHTML = "<span class=\"status "+status+"\">"+statusLabel[status]+"</span>"+
+      "<span class=\"txt\"><b>"+title+"</b><div class=\"d\">"+detail+"</div></span>";
+    cl.appendChild(row);
+  });
+
+  document.getElementById("checklistToggle").addEventListener("click", ()=>{
+    cl.hidden = !cl.hidden;
+    document.getElementById("checklistToggleLabel").textContent = cl.hidden ? "▸ 펼치기" : "▾ 접기";
+  });
+
+  // ---- Category distribution table ----
+  const catTable = document.getElementById("catTable");
+  categories.forEach((c,i)=>{
+    const pct = (c.total/totalAll*100).toFixed(1);
+    const barPct = (c.total/maxCat*100).toFixed(1);
+    const mainRow = document.createElement("tr");
+    mainRow.style.cursor = "pointer";
+    mainRow.innerHTML =
+      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+c.key+")\"></span></td>"+
+      "<td><b>"+c.name+"</b>"+
+        "<div style=\"height:6px;border-radius:3px;background:var(--surface-2);margin-top:6px;width:160px;overflow:hidden;\">"+
+          "<div style=\"height:100%;width:"+barPct+"%;background:var(--"+c.key+");\"></div>"+
+        "</div></td>"+
+      "<td class=\"num\">"+c.total+"건</td>"+
+      "<td class=\"num\">"+pct+"%</td>"+
+      "<td class=\"toggle\" style=\"color:var(--ink-3);font-size:11px;\">▸ 펼치기</td>";
+    catTable.appendChild(mainRow);
+
+    const subRow = document.createElement("tr");
+    subRow.hidden = true;
+    const td = document.createElement("td");
+    td.colSpan = 5;
+    td.style.background = "var(--surface-2)";
+    td.style.padding = "8px 4px";
+
+    const wrap = document.createElement("div");
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+
+    c.medium.forEach(m=>{
+      const mRow = document.createElement("div");
+      mRow.style.cursor = "pointer";
+      mRow.style.padding = "6px 8px";
+      mRow.style.fontSize = "12.5px";
+      mRow.style.color = "var(--ink-2)";
+      mRow.innerHTML = "<span class=\"toggle2\" style=\"display:inline-block;width:14px;color:var(--ink-3);font-size:10px;\">▸</span>"+
+        "<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.count+"</b>건 · "+m.name;
+      wrap.appendChild(mRow);
+
+      const sDiv = document.createElement("div");
+      sDiv.hidden = true;
+      sDiv.style.padding = "4px 8px 10px 30px";
+      sDiv.style.display = "flex";
+      sDiv.style.flexWrap = "wrap";
+      sDiv.style.gap = "6px 16px";
+      sDiv.style.fontSize = "12px";
+      sDiv.style.color = "var(--ink-3)";
+      sDiv.innerHTML = m.small.map(([sn,sc])=>"<span><b class=\"mono\">"+sc+"</b>건 · "+sn+"</span>").join("");
+      wrap.appendChild(sDiv);
+
+      mRow.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        sDiv.hidden = !sDiv.hidden;
+        mRow.querySelector(".toggle2").textContent = sDiv.hidden ? "▸" : "▾";
+      });
+    });
+
+    td.appendChild(wrap);
+    subRow.appendChild(td);
+    catTable.appendChild(subRow);
+
+    mainRow.addEventListener("click", ()=>{
+      subRow.hidden = !subRow.hidden;
+      mainRow.querySelector(".toggle").textContent = subRow.hidden ? "▸ 펼치기" : "▾ 접기";
+    });
+  });
+})();
+</script>
