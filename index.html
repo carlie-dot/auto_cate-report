@@ -374,7 +374,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th></th><th>대분류</th><th class="num">W35</th><th class="num">W36</th><th class="num">증감</th><th class="num">증감률</th><th></th></tr>
+          <tr><th></th><th>대분류</th><th class="num">W35</th><th class="num">W36</th><th class="num">증감</th><th class="num">증감률</th></tr>
         </thead>
         <tbody id="deltaTable"></tbody>
       </table>
@@ -392,7 +392,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th></th><th>대분류</th><th class="num">건수</th><th class="num">비중</th><th></th></tr>
+          <tr><th></th><th>대분류</th><th class="num">건수</th><th class="num">비중</th></tr>
         </thead>
         <tbody id="catTable"></tbody>
       </table>
@@ -683,19 +683,18 @@
     mainRow.style.cursor = "pointer";
     const diffColor = diff > 0 ? "var(--critical)" : (diff < 0 ? "var(--chart-ink-3)" : "var(--ink-3)");
     mainRow.innerHTML =
-      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+d.key+")\"></span></td>"+
+      "<td><span class=\"toggle-arrow\" style=\"display:inline-block;width:11px;color:var(--ink-3);font-size:10px;\">▸</span><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+d.key+")\"></span></td>"+
       "<td><b>"+d.name+"</b></td>"+
       "<td class=\"num\">"+d.w35+"건</td>"+
       "<td class=\"num\">"+d.w36+"건</td>"+
       "<td class=\"num\" style=\"color:"+diffColor+";font-weight:700;\">"+sign+diff+"</td>"+
-      "<td class=\"num\" style=\"color:"+diffColor+";\">"+pctText+(smallSample?" <span style=\"color:var(--ink-3);font-weight:400;\">(소표본)</span>":"")+"</td>"+
-      "<td class=\"toggle\" style=\"color:var(--ink-3);font-size:11px;\">▸ 펼치기</td>";
+      "<td class=\"num\" style=\"color:"+diffColor+";\">"+pctText+(smallSample?" <span style=\"color:var(--ink-3);font-weight:400;\">(소표본)</span>":"")+"</td>";
     dt.appendChild(mainRow);
 
     const subRow = document.createElement("tr");
     subRow.hidden = true;
     const td = document.createElement("td");
-    td.colSpan = 6;
+    td.colSpan = 5;
     td.style.background = "var(--surface-2)";
     td.style.padding = "8px 4px";
 
@@ -737,7 +736,7 @@
 
     mainRow.addEventListener("click", ()=>{
       subRow.hidden = !subRow.hidden;
-      mainRow.querySelector(".toggle").textContent = subRow.hidden ? "▸ 펼치기" : "▾ 접기";
+      mainRow.querySelector(".toggle-arrow").textContent = subRow.hidden ? "▸" : "▾";
     });
   });
 
@@ -768,20 +767,19 @@
     const mainRow = document.createElement("tr");
     mainRow.style.cursor = "pointer";
     mainRow.innerHTML =
-      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+c.key+")\"></span></td>"+
+      "<td><span class=\"toggle-arrow\" style=\"display:inline-block;width:11px;color:var(--ink-3);font-size:10px;\">▸</span><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+c.key+")\"></span></td>"+
       "<td><b>"+c.name+"</b>"+
         "<div style=\"height:6px;border-radius:3px;background:var(--surface-2);margin-top:6px;width:160px;overflow:hidden;\">"+
           "<div style=\"height:100%;width:"+barPct+"%;background:var(--"+c.key+");\"></div>"+
         "</div></td>"+
       "<td class=\"num\">"+c.total+"건</td>"+
-      "<td class=\"num\">"+pct+"%</td>"+
-      "<td class=\"toggle\" style=\"color:var(--ink-3);font-size:11px;\">▸ 펼치기</td>";
+      "<td class=\"num\">"+pct+"%</td>";
     catTable.appendChild(mainRow);
 
     const subRow = document.createElement("tr");
     subRow.hidden = true;
     const td = document.createElement("td");
-    td.colSpan = 5;
+    td.colSpan = 4;
     td.style.background = "var(--surface-2)";
     td.style.padding = "8px 4px";
 
@@ -823,7 +821,7 @@
 
     mainRow.addEventListener("click", ()=>{
       subRow.hidden = !subRow.hidden;
-      mainRow.querySelector(".toggle").textContent = subRow.hidden ? "▸ 펼치기" : "▾ 접기";
+      mainRow.querySelector(".toggle-arrow").textContent = subRow.hidden ? "▸" : "▾";
     });
   });
 })();
