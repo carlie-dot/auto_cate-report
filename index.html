@@ -188,6 +188,23 @@
   .section-head h2{ font-size: 17px; font-weight: 700; }
   .section-head .note{ font-size: 12.5px; color: var(--ink-3); }
 
+  .info-icon{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:15px; height:15px; margin-left:6px; vertical-align:middle;
+    border-radius:50%; border:1px solid var(--border-strong);
+    background: var(--surface-2); color: var(--ink-3);
+    font-size:11px; font-weight:700; font-style:normal;
+    cursor:help; position:relative; top:-1px;
+  }
+  .info-icon .bubble{
+    position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%);
+    background: var(--ink-1); color:#fff; font-size:12.5px; font-weight:400;
+    padding:8px 10px; border-radius:8px; white-space:normal; width:max-content; max-width:260px;
+    line-height:1.5; text-align:left; box-shadow:0 4px 14px rgba(0,0,0,0.18);
+    opacity:0; visibility:hidden; transition:opacity .12s ease; pointer-events:none; z-index:20;
+  }
+  .info-icon:hover .bubble, .info-icon:focus .bubble{ opacity:1; visibility:visible; }
+
   /* Stat tiles */
   .stats-row{
     display:grid;
@@ -333,8 +350,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>대분류별 증감 — W35 vs W36</h2>
-      <div class="note">증가폭 큰 순 · 표본 10건 미만은 %보다 건수로 해석 권장</div>
+      <h2>대분류별 증감 — W35 vs W36<span class="info-icon" tabindex="0">i<span class="bubble">증가폭 큰 순 · 표본 10건 미만은 %보다 건수로 해석 권장</span></span></h2>
     </div>
     <div class="table-wrap">
       <table>
@@ -352,8 +368,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>8월 전체 분포 (참고용, 대분류 8종)</h2>
-      <div class="note">2026-08-01~08-31, 514건 · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐</div>
+      <h2>8월 전체 분포 (참고용, 대분류 8종)<span class="info-icon" tabindex="0">i<span class="bubble">2026-08-01~08-31, 514건 · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐</span></span></h2>
     </div>
     <div class="table-wrap">
       <table>
@@ -367,8 +382,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>일별 문의 추이 — 2026년 8월 ~ 9월 첫 주</h2>
-      <div class="note">막대 위 음영은 ISO 주(월~일) 경계</div>
+      <h2>일별 문의 추이 — 2026년 8월 ~ 9월 첫 주<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계</span></span></h2>
     </div>
     <div class="chart-wrap">
       <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 일별 VOC 문의 건수 추이"></svg>
@@ -382,8 +396,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>ISO 주별 집계 (월요일 시작)</h2>
-      <div class="note">TRD 결정 F(배치 크기) 검증용</div>
+      <h2>ISO 주별 집계 (월요일 시작)<span class="info-icon" tabindex="0">i<span class="bubble">TRD 결정 F(배치 크기) 검증용</span></span></h2>
     </div>
     <div class="table-wrap">
       <table>
