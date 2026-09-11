@@ -401,14 +401,14 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>일별 문의 추이 — 2026년 8월 ~ 9월 첫 주<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계</span></span></h2>
+      <h2>일별 문의 추이 — 2026년 8월 1일 ~ 9월 10일<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계 · W37(9/7~)은 아직 진행 중인 주라 참고치</span></span></h2>
     </div>
     <div class="date-filter">
       <label>기간 <input type="date" id="dailyStart"> ~ <input type="date" id="dailyEnd"></label>
       <button type="button" id="dailyReset">최근 30일</button>
     </div>
     <div class="chart-wrap">
-      <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 일별 VOC 문의 건수 추이"></svg>
+      <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 1일~9월 10일 일별 VOC 문의 건수 추이"></svg>
       <div class="tooltip" id="tooltip" hidden></div>
     </div>
     <div class="legend-row">
@@ -447,7 +447,8 @@
     ["08-15",2],["08-16",5],["08-17",10],["08-18",19],["08-19",10],["08-20",7],["08-21",16],
     ["08-22",16],["08-23",4],["08-24",14],["08-25",13],["08-26",20],["08-27",13],["08-28",8],
     ["08-29",6],["08-30",6],["08-31",8],
-    ["09-01",23],["09-02",32],["09-03",144],["09-04",15],["09-05",8],["09-06",5]
+    ["09-01",23],["09-02",32],["09-03",144],["09-04",15],["09-05",8],["09-06",5],
+    ["09-07",8],["09-08",14],["09-09",28],["09-10",16]
   ];
   const weeks = [
     {w:31, range:"08-01 ~ 08-02", days:2, n:34, note:"부분 주(월요일 이전 2일치만)", cls:"partial"},
@@ -455,7 +456,8 @@
     {w:33, range:"08-10 ~ 08-16", days:7, n:198, note:"8/14 급증(87건) 포함", cls:"spike"},
     {w:34, range:"08-17 ~ 08-23", days:7, n:82, note:"", cls:""},
     {w:35, range:"08-24 ~ 08-30", days:7, n:80, note:"이번 비교의 \"그 전 주\"", cls:""},
-    {w:36, range:"08-31 ~ 09-06", days:7, n:235, note:"9/3 급증(144건) 포함 — 이번 비교의 \"지난 주\"", cls:"spike"}
+    {w:36, range:"08-31 ~ 09-06", days:7, n:235, note:"9/3 급증(144건) 포함 — 이번 비교의 \"지난 주\"", cls:"spike"},
+    {w:37, range:"09-07 ~ 09-13", days:4, n:66, note:"진행 중인 주 — 9/10까지 66건 누적, 정식 비교엔 미포함(참고치)", cls:"partial"}
   ];
   const deltas = [
     {key:"cat-1", name:"광고",       w35:19, w36:177},
