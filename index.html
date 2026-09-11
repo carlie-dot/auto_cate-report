@@ -1,5 +1,4 @@
 <title>주간 VOC 증감 리포트</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 @font-face{
   font-family: "Pretendard Variable";
@@ -118,9 +117,9 @@
   }
   h1,h2,h3{ text-wrap: balance; margin: 0; }
   .font-display{ font-family: "Pretendard Variable", "Pretendard", -apple-system, system-ui, sans-serif; }
-  .mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .mono{ font-family: "Pretendard Variable", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
   .eyebrow{
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-family: "Pretendard Variable", ui-monospace, monospace;
     font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -240,7 +239,7 @@
   .table-wrap{ overflow-x: auto; }
   th, td{ text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   th{ font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); font-weight: 600; }
-  td.num{ font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; text-align: right; }
+  td.num{ font-family: "Pretendard Variable", monospace; font-variant-numeric: tabular-nums; text-align: right; }
   td.note{ white-space: normal; color: var(--ink-2); }
   tr.spike td{ color: var(--critical); }
   tr.partial td{ color: var(--ink-3); }
@@ -274,14 +273,14 @@
   .steps{ display:flex; flex-direction:column; gap:10px; }
   .step{ display:flex; gap:12px; font-size:14px; line-height:1.6; }
   .step .tag{
-    flex:none; font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    flex:none; font-family:"Pretendard Variable",monospace; font-size:11px; font-weight:600;
     color: var(--ink-3); padding: 2px 0; width: 34px;
   }
   .step.done .tag{ color: var(--good); }
   .step.wait .tag{ color: var(--accent); }
 
   footer{ font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--border); padding-top: 16px; line-height:1.7; }
-  footer code{ font-family:"IBM Plex Mono",monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+  footer code{ font-family:"Pretendard Variable",monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
 </style>
 
 <div class="page">
@@ -527,7 +526,7 @@
     }
     const lbl = el("text", {
       x: padL + b.start*slot + (b.len*slot)/2, y: padT - 18,
-      "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"
+      "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"
     });
     lbl.textContent = "W"+b.w;
     svg.appendChild(lbl);
@@ -536,7 +535,7 @@
   // gridlines
   [30,60,90,120].forEach(v=>{
     svg.appendChild(el("line", {x1: padL, x2: W-padR, y1: y(v), y2: y(v), stroke:"var(--chart-grid)", "stroke-width":"1"}));
-    const t = el("text", {x: padL-6, y: y(v)+3, "text-anchor":"end", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"});
+    const t = el("text", {x: padL-6, y: y(v)+3, "text-anchor":"end", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
     t.textContent = v;
     svg.appendChild(t);
   });
@@ -557,13 +556,13 @@
     svg.appendChild(bar);
 
     if (isSpike){
-      const lbl = el("text", {x: x+barW/2, y: y(val)-8, "text-anchor":"middle", "font-size":"10", "font-weight":"700", fill:"var(--critical)", "font-family":"IBM Plex Mono, monospace"});
+      const lbl = el("text", {x: x+barW/2, y: y(val)-8, "text-anchor":"middle", "font-size":"10", "font-weight":"700", fill:"var(--critical)", "font-family":"Pretendard Variable, monospace"});
       lbl.textContent = val;
       svg.appendChild(lbl);
     }
 
     if ((i % 5 === 0 && i < n-3) || i === n-1){
-      const t = el("text", {x: x+barW/2, y: H-6, "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"IBM Plex Mono, monospace"});
+      const t = el("text", {x: x+barW/2, y: H-6, "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
       t.textContent = label;
       svg.appendChild(t);
     }
