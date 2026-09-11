@@ -251,6 +251,25 @@
   .legend-row .item{ display:flex; align-items:center; gap:6px; }
   .legend-row .swatch{ width:10px; height:10px; border-radius:2px; }
 
+  .date-filter{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:14px; font-size:12.5px; color: var(--ink-2);
+  }
+  .date-filter label{ display:flex; align-items:center; gap:6px; }
+  .date-filter input[type="date"]{
+    font: inherit; font-family:"Pretendard Variable","Pretendard",sans-serif;
+    border:1px solid var(--border-strong); border-radius:6px;
+    padding:3px 6px; background: var(--surface); color: var(--ink-1);
+    color-scheme: light;
+  }
+  .date-filter button{
+    font: inherit; font-family:"Pretendard Variable","Pretendard",sans-serif;
+    border:1px solid var(--border-strong); border-radius:6px;
+    padding:3px 10px; background: var(--surface-2); color: var(--ink-2);
+    cursor:pointer;
+  }
+  .date-filter button:hover{ background: var(--border); }
+
   /* Week table */
   table{ width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .table-wrap{ overflow-x: auto; }
@@ -384,6 +403,10 @@
     <div class="section-head">
       <h2>일별 문의 추이 — 2026년 8월 ~ 9월 첫 주<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계</span></span></h2>
     </div>
+    <div class="date-filter">
+      <label>기간 <input type="date" id="dailyStart"> ~ <input type="date" id="dailyEnd"></label>
+      <button type="button" id="dailyReset">최근 30일</button>
+    </div>
     <div class="chart-wrap">
       <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 일별 VOC 문의 건수 추이"></svg>
       <div class="tooltip" id="tooltip" hidden></div>
@@ -505,15 +528,15 @@
   const maxCat = Math.max(...categories.map(c=>c.total));
 
   // ---- Daily bar chart ----
+  const dailyAll = daily;
   const svg = document.getElementById("dailyChart");
   const ns = "http://www.w3.org/2000/svg";
   const W = 760, H = 250;
   const padL = 34, padR = 10, padT = 30, padB = 26;
   const plotW = W - padL - padR, plotH = H - padT - padB;
   const maxVal = 150;
-  const n = daily.length;
-  const slot = plotW / n;
-  const barW = Math.max(6, slot - 6);
+  const tooltip = document.getElementById("tooltip");
+  const wrap = document.querySelector(".chart-wrap");
 
   function y(v){ return padT + plotH - (v/maxVal)*plotH; }
   function el(tag, attrs){
@@ -521,81 +544,131 @@
     for (const k in attrs) e.setAttribute(k, attrs[k]);
     return e;
   }
-
-  // week bands
-  const weekBounds = [];
-  { let dayIdx = 0;
-    weeks.forEach(wk=>{
-      weekBounds.push({start: dayIdx, len: wk.days, w: wk.w});
-      dayIdx += wk.days;
+  function weekForLabel(label){
+    return weeks.find(w=>{
+      const [s,e] = w.range.split(" ~ ");
+      return label >= s && label <= e;
     });
   }
-  weekBounds.forEach((b,i)=>{
-    if (i % 2 === 1){
-      svg.appendChild(el("rect", {
-        x: padL + b.start*slot, y: padT - 14, width: b.len*slot, height: plotH + 14,
-        fill: "var(--surface-2)"
-      }));
-    }
-    const lbl = el("text", {
-      x: padL + b.start*slot + (b.len*slot)/2, y: padT - 18,
-      "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"
+
+  function renderDailyChart(filtered){
+    svg.innerHTML = "";
+    const n = filtered.length;
+    if (n === 0) return;
+    const slot = plotW / n;
+    const barW = Math.max(6, slot - 6);
+
+    // week bands (grouped by which ISO week each visible day falls in)
+    const weekBounds = [];
+    filtered.forEach((d,i)=>{
+      const wk = weekForLabel(d[0]);
+      const wNum = wk ? wk.w : null;
+      const last = weekBounds[weekBounds.length-1];
+      if (last && last.w === wNum) last.len++;
+      else weekBounds.push({start:i, len:1, w:wNum});
     });
-    lbl.textContent = "W"+b.w;
-    svg.appendChild(lbl);
-  });
-
-  // gridlines
-  [30,60,90,120].forEach(v=>{
-    svg.appendChild(el("line", {x1: padL, x2: W-padR, y1: y(v), y2: y(v), stroke:"var(--chart-grid)", "stroke-width":"1"}));
-    const t = el("text", {x: padL-6, y: y(v)+3, "text-anchor":"end", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
-    t.textContent = v;
-    svg.appendChild(t);
-  });
-  // baseline
-  svg.appendChild(el("line", {x1:padL, x2:W-padR, y1:y(0), y2:y(0), stroke:"var(--chart-base)", "stroke-width":"1"}));
-
-  const tooltip = document.getElementById("tooltip");
-  const wrap = document.querySelector(".chart-wrap");
-
-  daily.forEach((d,i)=>{
-    const [label, val] = d;
-    const x = padL + i*slot + (slot-barW)/2;
-    const isSpike = val >= 60;
-    const bar = el("rect", {
-      x: x, y: y(val), width: barW, height: y(0)-y(val),
-      rx: 2, fill: isSpike ? "var(--critical)" : "var(--chart-ink-3)"
-    });
-    svg.appendChild(bar);
-
-    if (isSpike){
-      const lbl = el("text", {x: x+barW/2, y: y(val)-8, "text-anchor":"middle", "font-size":"10", "font-weight":"700", fill:"var(--critical)", "font-family":"Pretendard Variable, monospace"});
-      lbl.textContent = val;
+    weekBounds.forEach((b,i)=>{
+      if (i % 2 === 1){
+        svg.appendChild(el("rect", {
+          x: padL + b.start*slot, y: padT - 14, width: b.len*slot, height: plotH + 14,
+          fill: "var(--surface-2)"
+        }));
+      }
+      const lbl = el("text", {
+        x: padL + b.start*slot + (b.len*slot)/2, y: padT - 18,
+        "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"
+      });
+      lbl.textContent = b.w != null ? ("W"+b.w) : "";
       svg.appendChild(lbl);
-    }
+    });
 
-    if ((i % 5 === 0 && i < n-3) || i === n-1){
-      const t = el("text", {x: x+barW/2, y: H-6, "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
-      t.textContent = label;
+    // gridlines
+    [30,60,90,120].forEach(v=>{
+      svg.appendChild(el("line", {x1: padL, x2: W-padR, y1: y(v), y2: y(v), stroke:"var(--chart-grid)", "stroke-width":"1"}));
+      const t = el("text", {x: padL-6, y: y(v)+3, "text-anchor":"end", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
+      t.textContent = v;
       svg.appendChild(t);
-    }
+    });
+    // baseline
+    svg.appendChild(el("line", {x1:padL, x2:W-padR, y1:y(0), y2:y(0), stroke:"var(--chart-base)", "stroke-width":"1"}));
 
-    const hit = el("rect", {x: padL + i*slot, y: padT-14, width: slot, height: plotH+14, class:"bar-hit"});
-    let spikeNote = "";
-    if (label === "08-14") spikeNote = "<br>광고 자체가 안 뜸(로딩 실패) — 이상치";
-    if (label === "09-03") spikeNote = "<br>광고는 보는데 다음 단계 진행 안 됨 — 이상치";
-    hit.addEventListener("mouseenter", ()=>{
-      tooltip.hidden = false;
-      tooltip.innerHTML = "<b>2026-"+label+"</b> · "+val+"건" + (isSpike ? spikeNote : "");
+    filtered.forEach((d,i)=>{
+      const [label, val] = d;
+      const x = padL + i*slot + (slot-barW)/2;
+      const isSpike = val >= 60;
+      const bar = el("rect", {
+        x: x, y: y(val), width: barW, height: y(0)-y(val),
+        rx: 2, fill: isSpike ? "var(--critical)" : "var(--chart-ink-3)"
+      });
+      svg.appendChild(bar);
+
+      if (isSpike){
+        const lbl = el("text", {x: x+barW/2, y: y(val)-8, "text-anchor":"middle", "font-size":"10", "font-weight":"700", fill:"var(--critical)", "font-family":"Pretendard Variable, monospace"});
+        lbl.textContent = val;
+        svg.appendChild(lbl);
+      }
+
+      if ((i % 5 === 0 && i < n-3) || i === n-1){
+        const t = el("text", {x: x+barW/2, y: H-6, "text-anchor":"middle", "font-size":"9", fill:"var(--chart-ink-3)", "font-family":"Pretendard Variable, monospace"});
+        t.textContent = label;
+        svg.appendChild(t);
+      }
+
+      const hit = el("rect", {x: padL + i*slot, y: padT-14, width: slot, height: plotH+14, class:"bar-hit"});
+      let spikeNote = "";
+      if (label === "08-14") spikeNote = "<br>광고 자체가 안 뜸(로딩 실패) — 이상치";
+      if (label === "09-03") spikeNote = "<br>광고는 보는데 다음 단계 진행 안 됨 — 이상치";
+      hit.addEventListener("mouseenter", ()=>{
+        tooltip.hidden = false;
+        tooltip.innerHTML = "<b>2026-"+label+"</b> · "+val+"건" + (isSpike ? spikeNote : "");
+      });
+      hit.addEventListener("mousemove",(e)=>{
+        const r = wrap.getBoundingClientRect();
+        tooltip.style.left = (e.clientX - r.left) + "px";
+        tooltip.style.top = (e.clientY - r.top) + "px";
+      });
+      hit.addEventListener("mouseleave", ()=>{ tooltip.hidden = true; });
+      svg.appendChild(hit);
     });
-    hit.addEventListener("mousemove",(e)=>{
-      const r = wrap.getBoundingClientRect();
-      tooltip.style.left = (e.clientX - r.left) + "px";
-      tooltip.style.top = (e.clientY - r.top) + "px";
-    });
-    hit.addEventListener("mouseleave", ()=>{ tooltip.hidden = true; });
-    svg.appendChild(hit);
+  }
+
+  // ---- date range filter (기본값: 리포트 갱신일 기준 최근 30일) ----
+  function toISO(label){ return "2026-"+label; }
+  function addDaysISO(iso, n){
+    const [yy,mm,dd] = iso.split("-").map(Number);
+    const dt = new Date(Date.UTC(yy, mm-1, dd));
+    dt.setUTCDate(dt.getUTCDate()+n);
+    return dt.toISOString().slice(0,10);
+  }
+  const dataMinISO = toISO(dailyAll[0][0]);
+  const dataMaxISO = toISO(dailyAll[dailyAll.length-1][0]);
+  const REPORT_TODAY = "2026-09-11"; // 리포트 갱신일 기준 "오늘" (뷰어 기기 날짜에 좌우되지 않게 고정)
+  const default30Start = addDaysISO(REPORT_TODAY, -30);
+  const defaultStart = default30Start > dataMinISO ? default30Start : dataMinISO;
+  const defaultEnd = REPORT_TODAY < dataMaxISO ? REPORT_TODAY : dataMaxISO;
+
+  const startInput = document.getElementById("dailyStart");
+  const endInput = document.getElementById("dailyEnd");
+  startInput.min = dataMinISO; startInput.max = dataMaxISO;
+  endInput.min = dataMinISO; endInput.max = dataMaxISO;
+  startInput.value = defaultStart;
+  endInput.value = defaultEnd;
+
+  function applyDailyFilter(){
+    let s = startInput.value || dataMinISO, e = endInput.value || dataMaxISO;
+    if (s > e){ const tmp = s; s = e; e = tmp; }
+    renderDailyChart(dailyAll.filter(d=>{
+      const iso = toISO(d[0]);
+      return iso >= s && iso <= e;
+    }));
+  }
+  startInput.addEventListener("change", applyDailyFilter);
+  endInput.addEventListener("change", applyDailyFilter);
+  document.getElementById("dailyReset").addEventListener("click", ()=>{
+    startInput.value = defaultStart; endInput.value = defaultEnd; applyDailyFilter();
   });
+
+  applyDailyFilter();
 
   // ---- Delta table (W35 vs W36) ----
   const dt = document.getElementById("deltaTable");
