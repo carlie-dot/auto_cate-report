@@ -369,12 +369,12 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>대분류별 증감 — W35 vs W36<span class="info-icon" tabindex="0">i<span class="bubble">증가폭 큰 순 · 표본 10건 미만은 %보다 건수로 해석 권장</span></span></h2>
+      <h2>대분류별 증감 — W35 vs W36<span class="info-icon" tabindex="0">i<span class="bubble">증가폭 큰 순 · 표본 10건 미만은 %보다 건수로 해석 권장 · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐(각 W35→W36 건수)</span></span></h2>
     </div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th></th><th>대분류</th><th class="num">W35</th><th class="num">W36</th><th class="num">증감</th><th class="num">증감률</th></tr>
+          <tr><th></th><th>대분류</th><th class="num">W35</th><th class="num">W36</th><th class="num">증감</th><th class="num">증감률</th><th></th></tr>
         </thead>
         <tbody id="deltaTable"></tbody>
       </table>
@@ -460,14 +460,14 @@
     {w:37, range:"09-07 ~ 09-13", days:4, n:66, note:"진행 중인 주 — 9/10까지 66건 누적, 정식 비교엔 미포함(참고치)", cls:"partial"}
   ];
   const deltas = [
-    {key:"cat-1", name:"광고",       w35:19, w36:177},
-    {key:"cat-4", name:"계정·로그인", w35:4,  w36:10},
-    {key:"cat-3", name:"걸음수",     w35:3,  w36:5},
-    {key:"cat-5", name:"교환·환전",   w35:28, w36:28},
-    {key:"cat-8", name:"혜택",       w35:4,  w36:2},
-    {key:"cat-7", name:"일반문의",   w35:4,  w36:3},
-    {key:"cat-2", name:"코인·포인트", w35:14, w36:9},
-    {key:"cat-6", name:"앱 오류",    w35:4,  w36:1}
+    {key:"cat-1", name:"광고", w35:19, w36:177, detail:[{name:"보상 누락",w35:0,w36:160,small:[["초기화 반복",0,83],["적립 미반영",0,73],["(미지정)",0,4]]},{name:"이용 불만",w35:10,w36:7,small:[["시간 과다",7,3],["노출 빈도 과다",2,3],["부적절한 소재",1,1]]},{name:"재생 중단",w35:9,w36:6,small:[["진행 멈춤",8,4],["종료 버튼 미노출",1,1],["(미지정)",0,1]]},{name:"시청 불가",w35:0,w36:4,small:[["로딩 실패",0,4]]}]},
+    {key:"cat-4", name:"계정·로그인", w35:4, w36:10, detail:[{name:"로그인 오류",w35:1,w36:8,small:[["(미지정)",0,5],["인증 실패",1,2],["가입화면 반복",0,1]]},{name:"계정 변경",w35:3,w36:2,small:[["기기변경",2,2],["정보 수정",1,0]]}]},
+    {key:"cat-3", name:"걸음수", w35:3, w36:5, detail:[{name:"보상 누락",w35:1,w36:4,small:[["미지급",1,4]]},{name:"측정 오류",w35:2,w36:0,small:[["미반영",2,0]]},{name:"연동 오류",w35:0,w36:1,small:[["(미지정)",0,1]]}]},
+    {key:"cat-5", name:"교환·환전", w35:28, w36:28, detail:[{name:"현금교환",w35:15,w36:22,small:[["계좌 문의",6,16],["미입금",5,6],["(미지정)",4,0]]},{name:"상품권",w35:7,w36:2,small:[["(미지정)",4,1],["등록 불가",3,1]]},{name:"교환 불가",w35:6,w36:2,small:[["품절",4,2],["(미지정)",2,0]]},{name:"암호화폐",w35:0,w36:2,small:[["거래소 연동",0,2]]}]},
+    {key:"cat-8", name:"혜택", w35:4, w36:2, detail:[{name:"버니로또",w35:1,w36:2,small:[["응모 누락",0,2],["당첨금 미지급",1,0]]},{name:"번개발전소",w35:1,w36:0,small:[["점검·소멸 문의",1,0]]},{name:"지피의하루",w35:1,w36:0,small:[["알림 오류",1,0]]},{name:"매일받는연금복권",w35:1,w36:0,small:[["추첨 누락",1,0]]}]},
+    {key:"cat-7", name:"일반문의", w35:4, w36:3, detail:[{name:"기타",w35:4,w36:3,small:[["단순문의",4,3]]}]},
+    {key:"cat-2", name:"코인·포인트", w35:14, w36:9, detail:[{name:"소멸",w35:11,w36:5,small:[["복구 요청",7,3],["기준 문의",4,2]]},{name:"잔액 변동",w35:3,w36:3,small:[["원인 문의",3,3]]},{name:"적립 누락",w35:0,w36:1,small:[["(미지정)",0,1]]}]},
+    {key:"cat-6", name:"앱 오류", w35:4, w36:1, detail:[{name:"실행 오류",w35:2,w36:1,small:[["화면 멈춤",2,1]]},{name:"성능 저하",w35:2,w36:0,small:[["(미지정)",2,0]]}]}
   ].sort((a,b)=>(b.w36-b.w35)-(a.w36-a.w35));
 
   // W37 (current, incomplete week) - reference values only, not part of the W35/W36 comparison
@@ -679,16 +679,66 @@
     const sign = diff > 0 ? "+" : "";
     const pctText = d.w35 === 0 ? "신규" : (sign + Math.round((diff/d.w35)*100) + "%");
     const smallSample = d.w35 < 10 && d.w36 < 10;
-    const tr = document.createElement("tr");
+    const mainRow = document.createElement("tr");
+    mainRow.style.cursor = "pointer";
     const diffColor = diff > 0 ? "var(--critical)" : (diff < 0 ? "var(--chart-ink-3)" : "var(--ink-3)");
-    tr.innerHTML =
+    mainRow.innerHTML =
       "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+d.key+")\"></span></td>"+
       "<td><b>"+d.name+"</b></td>"+
       "<td class=\"num\">"+d.w35+"건</td>"+
       "<td class=\"num\">"+d.w36+"건</td>"+
       "<td class=\"num\" style=\"color:"+diffColor+";font-weight:700;\">"+sign+diff+"</td>"+
-      "<td class=\"num\" style=\"color:"+diffColor+";\">"+pctText+(smallSample?" <span style=\"color:var(--ink-3);font-weight:400;\">(소표본)</span>":"")+"</td>";
-    dt.appendChild(tr);
+      "<td class=\"num\" style=\"color:"+diffColor+";\">"+pctText+(smallSample?" <span style=\"color:var(--ink-3);font-weight:400;\">(소표본)</span>":"")+"</td>"+
+      "<td class=\"toggle\" style=\"color:var(--ink-3);font-size:11px;\">▸ 펼치기</td>";
+    dt.appendChild(mainRow);
+
+    const subRow = document.createElement("tr");
+    subRow.hidden = true;
+    const td = document.createElement("td");
+    td.colSpan = 6;
+    td.style.background = "var(--surface-2)";
+    td.style.padding = "8px 4px";
+
+    const wrap = document.createElement("div");
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+
+    (d.detail||[]).forEach(m=>{
+      const mRow = document.createElement("div");
+      mRow.style.cursor = "pointer";
+      mRow.style.padding = "6px 8px";
+      mRow.style.fontSize = "12.5px";
+      mRow.style.color = "var(--ink-2)";
+      mRow.innerHTML = "<span class=\"toggle2\" style=\"display:inline-block;width:14px;color:var(--ink-3);font-size:10px;\">▸</span>"+
+        "<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.w35+"</b>→<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.w36+"</b>건 · "+m.name;
+      wrap.appendChild(mRow);
+
+      const sDiv = document.createElement("div");
+      sDiv.style.display = "none";
+      sDiv.style.padding = "4px 8px 10px 30px";
+      sDiv.style.flexWrap = "wrap";
+      sDiv.style.gap = "6px 16px";
+      sDiv.style.fontSize = "12px";
+      sDiv.style.color = "var(--ink-3)";
+      sDiv.innerHTML = m.small.map(([sn,s35,s36])=>"<span><b class=\"mono\">"+s35+"</b>→<b class=\"mono\">"+s36+"</b>건 · "+sn+"</span>").join("");
+      wrap.appendChild(sDiv);
+
+      mRow.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const willShow = sDiv.style.display === "none";
+        sDiv.style.display = willShow ? "flex" : "none";
+        mRow.querySelector(".toggle2").textContent = willShow ? "▾" : "▸";
+      });
+    });
+
+    td.appendChild(wrap);
+    subRow.appendChild(td);
+    dt.appendChild(subRow);
+
+    mainRow.addEventListener("click", ()=>{
+      subRow.hidden = !subRow.hidden;
+      mainRow.querySelector(".toggle").textContent = subRow.hidden ? "▸ 펼치기" : "▾ 접기";
+    });
   });
 
   // ---- W37 reference-value breakdown ----
@@ -750,9 +800,8 @@
       wrap.appendChild(mRow);
 
       const sDiv = document.createElement("div");
-      sDiv.hidden = true;
+      sDiv.style.display = "none";
       sDiv.style.padding = "4px 8px 10px 30px";
-      sDiv.style.display = "flex";
       sDiv.style.flexWrap = "wrap";
       sDiv.style.gap = "6px 16px";
       sDiv.style.fontSize = "12px";
@@ -762,8 +811,9 @@
 
       mRow.addEventListener("click", (e)=>{
         e.stopPropagation();
-        sDiv.hidden = !sDiv.hidden;
-        mRow.querySelector(".toggle2").textContent = sDiv.hidden ? "▸" : "▾";
+        const willShow = sDiv.style.display === "none";
+        sDiv.style.display = willShow ? "flex" : "none";
+        mRow.querySelector(".toggle2").textContent = willShow ? "▾" : "▸";
       });
     });
 
