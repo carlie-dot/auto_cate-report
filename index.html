@@ -381,7 +381,15 @@
     </div>
     <div class="legend-row" style="margin-top:14px; align-items:center;">
       <span class="status info" style="flex:none;">참고치</span>
-      <span>이번 주(W37, 9/7~9/13 · 진행 중, 2026-09-11 기준) — <span id="w37Breakdown"></span></span>
+      <span>이번 주(W37, 9/7~9/13 · 진행 중, 2026-09-11 기준) — 아직 끝나지 않은 주라 정식 비교(위 표)에는 포함하지 않았습니다.</span>
+    </div>
+    <div class="table-wrap" style="margin-top:8px;">
+      <table>
+        <thead>
+          <tr><th></th><th>대분류</th><th class="num">건수</th></tr>
+        </thead>
+        <tbody id="w37Table"></tbody>
+      </table>
     </div>
   </section>
 
@@ -740,13 +748,16 @@
     });
   });
 
-  // ---- W37 reference-value breakdown ----
-  document.getElementById("w37Breakdown").innerHTML = w37.map(w=>
-    "<span style=\"display:inline-flex;align-items:center;gap:5px;margin-right:14px;\">"+
-      "<span class=\"dot\" style=\"display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--"+w.key+")\"></span>"+
-      "<b class=\"mono\" style=\"color:var(--ink-1);\">"+w.count+"</b>건 · "+w.name+
-    "</span>"
-  ).join("");
+  // ---- W37 reference-value breakdown (대분류별 증감 표와 같은 행 UI 재사용) ----
+  const w37t = document.getElementById("w37Table");
+  w37.forEach(w=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+w.key+")\"></span></td>"+
+      "<td><b>"+w.name+"</b></td>"+
+      "<td class=\"num\">"+w.count+"건</td>";
+    w37t.appendChild(tr);
+  });
 
   // ---- Week table ----
   const wt = document.getElementById("weekTable");
