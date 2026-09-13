@@ -256,7 +256,7 @@
     margin-bottom:14px; font-size:12.5px; color: var(--ink-2);
   }
   .date-filter label{ display:flex; align-items:center; gap:6px; }
-  .date-filter input[type="date"]{
+  .date-filter input[type="date"], .date-filter select{
     font: inherit; font-family:"Pretendard Variable","Pretendard",sans-serif;
     border:1px solid var(--border-strong); border-radius:6px;
     padding:3px 6px; background: var(--surface); color: var(--ink-1);
@@ -395,7 +395,11 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>8월 전체 분포 (참고용, 대분류 8종)<span class="info-icon" tabindex="0">i<span class="bubble">2026-08-01~08-31, 514건 · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐</span></span></h2>
+      <h2 id="catSectionTitle">월별 분포<span class="info-icon" tabindex="0">i<span class="bubble" id="catInfoBubble">행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐</span></span></h2>
+    </div>
+    <div class="date-filter">
+      <label>기간 <select id="monthSelect"></select></label>
+      <span class="status info" id="catRefBadge" style="display:none;">참고치</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -487,55 +491,102 @@
     {key:"cat-6", name:"앱 오류", count:2, detail:[{name:"실행 오류",count:2,small:[["(미지정)",1],["화면 멈춤",1]]}]},
     {key:"cat-7", name:"일반문의", count:2, detail:[{name:"기타",count:1,small:[["단순문의",1]]},{name:"건의사항",count:1,small:[["개선요청",1]]}]}
   ].sort((a,b)=>b.count-a.count);
-  const categories = [
-    {key:"cat-1", name:"광고", total:283, medium:[
-      {name:"시청 불가", count:207, small:[["로딩 실패",204],["특정 매체 오류",3]]},
-      {name:"재생 중단", count:34, small:[["진행 멈춤",27],["종료 버튼 미노출",6],["(미지정)",1]]},
-      {name:"보상 누락", count:23, small:[["적립 미반영",11],["(미지정)",10],["초기화 반복",2]]},
-      {name:"이용 불만", count:19, small:[["시간 과다",15],["노출 빈도 과다",2],["부적절한 소재",2]]}
-    ]},
-    {key:"cat-5", name:"교환", total:103, medium:[
-      {name:"현금교환", count:57, small:[["계좌 문의",40],["미입금",12],["(미지정)",5]]},
-      {name:"교환 불가", count:24, small:[["품절",17],["(미지정)",7]]},
-      {name:"상품권", count:18, small:[["(미지정)",10],["등록 불가",7],["유효기간 만료",1]]},
-      {name:"암호화폐", count:3, small:[["(미지정)",2],["거래소 연동",1]]},
-      {name:"(세부 미지정)", count:1, small:[["(미지정)",1]]}
-    ]},
-    {key:"cat-4", name:"계정·로그인", total:42, medium:[
-      {name:"로그인 오류", count:20, small:[["(미지정)",12],["가입화면 반복",4],["인증 실패",4]]},
-      {name:"계정 변경", count:20, small:[["기기변경",15],["정보 수정",5]]},
-      {name:"탈퇴", count:2, small:[["(미지정)",2]]}
-    ]},
-    {key:"cat-2", name:"코인·포인트", total:33, medium:[
-      {name:"소멸", count:21, small:[["복구 요청",14],["기준 문의",7]]},
-      {name:"적립 누락", count:6, small:[["(미지정)",4],["미션·퀴즈",2]]},
-      {name:"잔액 변동", count:6, small:[["원인 문의",6]]}
-    ]},
-    {key:"cat-7", name:"일반문의", total:19, medium:[
-      {name:"기타", count:12, small:[["단순문의",12]]},
-      {name:"건의사항", count:7, small:[["개선요청",7]]}
-    ]},
-    {key:"cat-8", name:"혜택", total:16, medium:[
-      {name:"매일받는연금복권", count:4, small:[["지급내역 확인불가",2],["추첨 누락",1],["수령방법 문의",1]]},
-      {name:"버니로또", count:4, small:[["당첨금 미지급",3],["응모 누락",1]]},
-      {name:"버니상회(쇼핑요정지피)", count:2, small:[["사용법 문의",1],["주문·취소 문의",1]]},
-      {name:"번개발전소", count:2, small:[["점검·소멸 문의",1],["보상 미지급",1]]},
-      {name:"지피의하루", count:2, small:[["알림 오류",1],["보상 미지급",1]]},
-      {name:"꼬마어부지피", count:1, small:[["진행 오류",1]]},
-      {name:"오늘의퀴즈", count:1, small:[["정답보상 미지급",1]]}
-    ]},
-    {key:"cat-3", name:"걸음수", total:12, medium:[
-      {name:"측정 오류", count:6, small:[["미반영",4],["초기화",1],["(미지정)",1]]},
-      {name:"보상 누락", count:3, small:[["미지급",3]]},
-      {name:"연동 오류", count:3, small:[["삼성헬스 연동",2],["(미지정)",1]]}
-    ]},
-    {key:"cat-6", name:"앱 오류", total:6, medium:[
-      {name:"실행 오류", count:4, small:[["화면 멈춤",4]]},
-      {name:"성능 저하", count:2, small:[["(미지정)",2]]}
-    ]}
-  ];
-  const totalAll = categories.reduce((s,c)=>s+c.total,0);
-  const maxCat = Math.max(...categories.map(c=>c.total));
+  const monthlyCategories = {
+    "2026-08": {
+      label: "2026년 8월", complete: true, note: "2026-08-01~08-31, 514건",
+      categories: [
+        {key:"cat-1", name:"광고", total:283, medium:[
+          {name:"시청 불가", count:207, small:[["로딩 실패",204],["특정 매체 오류",3]]},
+          {name:"재생 중단", count:34, small:[["진행 멈춤",27],["종료 버튼 미노출",6],["(미지정)",1]]},
+          {name:"보상 누락", count:23, small:[["적립 미반영",11],["(미지정)",10],["초기화 반복",2]]},
+          {name:"이용 불만", count:19, small:[["시간 과다",15],["노출 빈도 과다",2],["부적절한 소재",2]]}
+        ]},
+        {key:"cat-5", name:"교환", total:103, medium:[
+          {name:"현금교환", count:57, small:[["계좌 문의",40],["미입금",12],["(미지정)",5]]},
+          {name:"교환 불가", count:24, small:[["품절",17],["(미지정)",7]]},
+          {name:"상품권", count:18, small:[["(미지정)",10],["등록 불가",7],["유효기간 만료",1]]},
+          {name:"암호화폐", count:3, small:[["(미지정)",2],["거래소 연동",1]]},
+          {name:"(세부 미지정)", count:1, small:[["(미지정)",1]]}
+        ]},
+        {key:"cat-4", name:"계정·로그인", total:42, medium:[
+          {name:"로그인 오류", count:20, small:[["(미지정)",12],["가입화면 반복",4],["인증 실패",4]]},
+          {name:"계정 변경", count:20, small:[["기기변경",15],["정보 수정",5]]},
+          {name:"탈퇴", count:2, small:[["(미지정)",2]]}
+        ]},
+        {key:"cat-2", name:"코인·포인트", total:33, medium:[
+          {name:"소멸", count:21, small:[["복구 요청",14],["기준 문의",7]]},
+          {name:"적립 누락", count:6, small:[["(미지정)",4],["미션·퀴즈",2]]},
+          {name:"잔액 변동", count:6, small:[["원인 문의",6]]}
+        ]},
+        {key:"cat-7", name:"일반문의", total:19, medium:[
+          {name:"기타", count:12, small:[["단순문의",12]]},
+          {name:"건의사항", count:7, small:[["개선요청",7]]}
+        ]},
+        {key:"cat-8", name:"혜택", total:16, medium:[
+          {name:"매일받는연금복권", count:4, small:[["지급내역 확인불가",2],["추첨 누락",1],["수령방법 문의",1]]},
+          {name:"버니로또", count:4, small:[["당첨금 미지급",3],["응모 누락",1]]},
+          {name:"버니상회(쇼핑요정지피)", count:2, small:[["사용법 문의",1],["주문·취소 문의",1]]},
+          {name:"번개발전소", count:2, small:[["점검·소멸 문의",1],["보상 미지급",1]]},
+          {name:"지피의하루", count:2, small:[["알림 오류",1],["보상 미지급",1]]},
+          {name:"꼬마어부지피", count:1, small:[["진행 오류",1]]},
+          {name:"오늘의퀴즈", count:1, small:[["정답보상 미지급",1]]}
+        ]},
+        {key:"cat-3", name:"걸음수", total:12, medium:[
+          {name:"측정 오류", count:6, small:[["미반영",4],["초기화",1],["(미지정)",1]]},
+          {name:"보상 누락", count:3, small:[["미지급",3]]},
+          {name:"연동 오류", count:3, small:[["삼성헬스 연동",2],["(미지정)",1]]}
+        ]},
+        {key:"cat-6", name:"앱 오류", total:6, medium:[
+          {name:"실행 오류", count:4, small:[["화면 멈춤",4]]},
+          {name:"성능 저하", count:2, small:[["(미지정)",2]]}
+        ]}
+      ]
+    },
+    "2026-09": {
+      label: "2026년 9월", complete: false, note: "2026-09-01~09-10 기준, 293건 누적",
+      categories: [
+        {key:"cat-1", name:"광고", total:190, medium:[
+          {name:"보상 누락",count:160,small:[["초기화 반복",83],["적립 미반영",73],["(미지정)",4]]},
+          {name:"재생 중단",count:15,small:[["진행 멈춤",12],["종료 버튼 미노출",2],["(미지정)",1]]},
+          {name:"이용 불만",count:9,small:[["시간 과다",4],["노출 빈도 과다",3],["부적절한 소재",2]]},
+          {name:"시청 불가",count:6,small:[["로딩 실패",5],["특정 매체 오류",1]]}
+        ]},
+        {key:"cat-5", name:"교환", total:61, medium:[
+          {name:"현금교환",count:51,small:[["계좌 문의",25],["미입금",25],["(미지정)",1]]},
+          {name:"상품권",count:5,small:[["(미지정)",2],["유효기간 만료",2],["등록 불가",1]]},
+          {name:"암호화폐",count:3,small:[["거래소 연동",3]]},
+          {name:"교환 불가",count:1,small:[["품절",1]]},
+          {name:"(미지정)",count:1,small:[["(미지정)",1]]}
+        ]},
+        {key:"cat-4", name:"계정·로그인", total:18, medium:[
+          {name:"로그인 오류",count:14,small:[["(미지정)",5],["가입화면 반복",5],["인증 실패",4]]},
+          {name:"계정 변경",count:4,small:[["기기변경",4]]}
+        ]},
+        {key:"cat-2", name:"코인·포인트", total:8, medium:[
+          {name:"소멸",count:4,small:[["기준 문의",2],["복구 요청",2]]},
+          {name:"잔액 변동",count:3,small:[["원인 문의",3]]},
+          {name:"적립 누락",count:1,small:[["(미지정)",1]]}
+        ]},
+        {key:"cat-7", name:"일반문의", total:5, medium:[
+          {name:"기타",count:4,small:[["단순문의",4]]},
+          {name:"건의사항",count:1,small:[["개선요청",1]]}
+        ]},
+        {key:"cat-3", name:"걸음수", total:4, medium:[
+          {name:"보상 누락",count:4,small:[["미지급",4]]}
+        ]},
+        {key:"cat-8", name:"혜택", total:4, medium:[
+          {name:"버니상회(쇼핑요정지피)",count:2,small:[["적립 누락",2]]},
+          {name:"버니로또",count:1,small:[["응모 누락",1]]},
+          {name:"얼음지피",count:1,small:[["(미지정)",1]]}
+        ]},
+        {key:"cat-6", name:"앱 오류", total:3, medium:[
+          {name:"실행 오류",count:3,small:[["화면 멈춤",2],["(미지정)",1]]}
+        ]}
+      ]
+    }
+  };
+  const monthKeys = Object.keys(monthlyCategories).sort();
+  const latestMonthKey = monthKeys[monthKeys.length-1];
 
   // ---- Daily bar chart ----
   const dailyAll = daily;
@@ -819,70 +870,98 @@
 
   // (공개용 리포트: 데이터 품질 체크리스트·다음 단계 섹션은 의도적으로 뺐음 — checklist 배열은 더 이상 쓰이지 않음)
 
-  // ---- Category distribution table ----
+  // ---- Category distribution table (월 선택에 따라 다시 그림) ----
   const catTable = document.getElementById("catTable");
-  categories.forEach((c,i)=>{
-    const pct = (c.total/totalAll*100).toFixed(1);
-    const barPct = (c.total/maxCat*100).toFixed(1);
-    const mainRow = document.createElement("tr");
-    mainRow.style.cursor = "pointer";
-    mainRow.innerHTML =
-      "<td><span class=\"toggle-arrow\" style=\"display:inline-block;width:11px;color:var(--ink-3);font-size:10px;\">▸</span><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+c.key+")\"></span></td>"+
-      "<td><b>"+c.name+"</b>"+
-        "<div style=\"height:6px;border-radius:3px;background:var(--surface-2);margin-top:6px;width:160px;overflow:hidden;\">"+
-          "<div style=\"height:100%;width:"+barPct+"%;background:var(--"+c.key+");\"></div>"+
-        "</div></td>"+
-      "<td class=\"num\">"+c.total+"건</td>"+
-      "<td class=\"num\">"+pct+"%</td>";
-    catTable.appendChild(mainRow);
+  const monthSelect = document.getElementById("monthSelect");
+  const catSectionTitle = document.getElementById("catSectionTitle");
+  const catInfoBubble = document.getElementById("catInfoBubble");
+  const catRefBadge = document.getElementById("catRefBadge");
 
-    const subRow = document.createElement("tr");
-    subRow.hidden = true;
-    const td = document.createElement("td");
-    td.colSpan = 4;
-    td.style.background = "var(--surface-2)";
-    td.style.padding = "8px 4px";
+  monthKeys.forEach(k=>{
+    const opt = document.createElement("option");
+    opt.value = k;
+    opt.textContent = monthlyCategories[k].label;
+    monthSelect.appendChild(opt);
+  });
+  monthSelect.value = latestMonthKey;
 
-    const wrap = document.createElement("div");
-    wrap.style.display = "flex";
-    wrap.style.flexDirection = "column";
+  function renderCatTable(monthKey){
+    const monthData = monthlyCategories[monthKey];
+    const categories = monthData.categories;
+    const totalAll = categories.reduce((s,c)=>s+c.total,0);
+    const maxCat = Math.max(...categories.map(c=>c.total));
 
-    c.medium.forEach(m=>{
-      const mRow = document.createElement("div");
-      mRow.style.cursor = "pointer";
-      mRow.style.padding = "6px 8px";
-      mRow.style.fontSize = "12.5px";
-      mRow.style.color = "var(--ink-2)";
-      mRow.innerHTML = "<span class=\"toggle2\" style=\"display:inline-block;width:14px;color:var(--ink-3);font-size:10px;\">▸</span>"+
-        "<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.count+"</b>건 · "+m.name;
-      wrap.appendChild(mRow);
+    catSectionTitle.childNodes[0].textContent = monthData.label + (monthData.complete ? " 전체 분포" : " 분포") + " (대분류 8종)";
+    catInfoBubble.textContent = monthData.note + " · 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐";
+    catRefBadge.style.display = monthData.complete ? "none" : "inline";
 
-      const sDiv = document.createElement("div");
-      sDiv.style.display = "none";
-      sDiv.style.padding = "4px 8px 10px 30px";
-      sDiv.style.flexWrap = "wrap";
-      sDiv.style.gap = "6px 16px";
-      sDiv.style.fontSize = "12px";
-      sDiv.style.color = "var(--ink-3)";
-      sDiv.innerHTML = m.small.map(([sn,sc])=>"<span><b class=\"mono\">"+sc+"</b>건 · "+sn+"</span>").join("");
-      wrap.appendChild(sDiv);
+    catTable.innerHTML = "";
+    categories.forEach((c,i)=>{
+      const pct = (c.total/totalAll*100).toFixed(1);
+      const barPct = (c.total/maxCat*100).toFixed(1);
+      const mainRow = document.createElement("tr");
+      mainRow.style.cursor = "pointer";
+      mainRow.innerHTML =
+        "<td><span class=\"toggle-arrow\" style=\"display:inline-block;width:11px;color:var(--ink-3);font-size:10px;\">▸</span><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+c.key+")\"></span></td>"+
+        "<td><b>"+c.name+"</b>"+
+          "<div style=\"height:6px;border-radius:3px;background:var(--surface-2);margin-top:6px;width:160px;overflow:hidden;\">"+
+            "<div style=\"height:100%;width:"+barPct+"%;background:var(--"+c.key+");\"></div>"+
+          "</div></td>"+
+        "<td class=\"num\">"+c.total+"건</td>"+
+        "<td class=\"num\">"+pct+"%</td>";
+      catTable.appendChild(mainRow);
 
-      mRow.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        const willShow = sDiv.style.display === "none";
-        sDiv.style.display = willShow ? "flex" : "none";
-        mRow.querySelector(".toggle2").textContent = willShow ? "▾" : "▸";
+      const subRow = document.createElement("tr");
+      subRow.hidden = true;
+      const td = document.createElement("td");
+      td.colSpan = 4;
+      td.style.background = "var(--surface-2)";
+      td.style.padding = "8px 4px";
+
+      const wrap = document.createElement("div");
+      wrap.style.display = "flex";
+      wrap.style.flexDirection = "column";
+
+      c.medium.forEach(m=>{
+        const mRow = document.createElement("div");
+        mRow.style.cursor = "pointer";
+        mRow.style.padding = "6px 8px";
+        mRow.style.fontSize = "12.5px";
+        mRow.style.color = "var(--ink-2)";
+        mRow.innerHTML = "<span class=\"toggle2\" style=\"display:inline-block;width:14px;color:var(--ink-3);font-size:10px;\">▸</span>"+
+          "<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.count+"</b>건 · "+m.name;
+        wrap.appendChild(mRow);
+
+        const sDiv = document.createElement("div");
+        sDiv.style.display = "none";
+        sDiv.style.padding = "4px 8px 10px 30px";
+        sDiv.style.flexWrap = "wrap";
+        sDiv.style.gap = "6px 16px";
+        sDiv.style.fontSize = "12px";
+        sDiv.style.color = "var(--ink-3)";
+        sDiv.innerHTML = m.small.map(([sn,sc])=>"<span><b class=\"mono\">"+sc+"</b>건 · "+sn+"</span>").join("");
+        wrap.appendChild(sDiv);
+
+        mRow.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          const willShow = sDiv.style.display === "none";
+          sDiv.style.display = willShow ? "flex" : "none";
+          mRow.querySelector(".toggle2").textContent = willShow ? "▾" : "▸";
+        });
+      });
+
+      td.appendChild(wrap);
+      subRow.appendChild(td);
+      catTable.appendChild(subRow);
+
+      mainRow.addEventListener("click", ()=>{
+        subRow.hidden = !subRow.hidden;
+        mainRow.querySelector(".toggle-arrow").textContent = subRow.hidden ? "▸" : "▾";
       });
     });
+  }
 
-    td.appendChild(wrap);
-    subRow.appendChild(td);
-    catTable.appendChild(subRow);
-
-    mainRow.addEventListener("click", ()=>{
-      subRow.hidden = !subRow.hidden;
-      mainRow.querySelector(".toggle-arrow").textContent = subRow.hidden ? "▸" : "▾";
-    });
-  });
+  monthSelect.addEventListener("change", ()=> renderCatTable(monthSelect.value));
+  renderCatTable(latestMonthKey);
 })();
 </script>
