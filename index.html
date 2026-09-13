@@ -381,7 +381,7 @@
     </div>
     <div class="legend-row" style="margin-top:14px; align-items:center;">
       <span class="status info" style="flex:none;">참고치</span>
-      <span>이번 주(W37, 9/7~9/13 · 진행 중, 2026-09-11 기준) — 아직 끝나지 않은 주라 정식 비교(위 표)에는 포함하지 않았습니다.</span>
+      <span>이번 주(W37, 9/7~9/13 · 진행 중, 2026-09-11 기준) — 아직 끝나지 않은 주라 정식 비교(위 표)에는 포함하지 않았습니다. 행 클릭 → 중분류, 중분류 클릭 → 소분류까지 펼쳐짐.</span>
     </div>
     <div class="table-wrap" style="margin-top:8px;">
       <table>
@@ -480,12 +480,12 @@
 
   // W37 (current, incomplete week) - reference values only, not part of the W35/W36 comparison
   const w37 = [
-    {key:"cat-5", name:"교환", count:37},
-    {key:"cat-1", name:"광고", count:14},
-    {key:"cat-4", name:"계정·로그인", count:8},
-    {key:"cat-8", name:"혜택", count:3},
-    {key:"cat-6", name:"앱 오류", count:2},
-    {key:"cat-7", name:"일반문의", count:2}
+    {key:"cat-5", name:"교환", count:37, detail:[{name:"현금교환",count:32,small:[["미입금",19],["계좌 문의",12],["(미지정)",1]]},{name:"상품권",count:3,small:[["유효기간 만료",2],["(미지정)",1]]},{name:"(미지정)",count:1,small:[["(미지정)",1]]},{name:"암호화폐",count:1,small:[["거래소 연동",1]]}]},
+    {key:"cat-1", name:"광고", count:14, detail:[{name:"재생 중단",count:9,small:[["진행 멈춤",8],["종료 버튼 미노출",1]]},{name:"시청 불가",count:2,small:[["로딩 실패",1],["특정 매체 오류",1]]},{name:"이용 불만",count:2,small:[["시간 과다",1],["부적절한 소재",1]]},{name:"보상 누락",count:1,small:[["적립 미반영",1]]}]},
+    {key:"cat-4", name:"계정·로그인", count:8, detail:[{name:"로그인 오류",count:6,small:[["가입화면 반복",4],["인증 실패",2]]},{name:"계정 변경",count:2,small:[["기기변경",2]]}]},
+    {key:"cat-8", name:"혜택", count:3, detail:[{name:"버니상회(쇼핑요정지피)",count:2,small:[["적립 누락",2]]},{name:"얼음지피",count:1,small:[["(미지정)",1]]}]},
+    {key:"cat-6", name:"앱 오류", count:2, detail:[{name:"실행 오류",count:2,small:[["(미지정)",1],["화면 멈춤",1]]}]},
+    {key:"cat-7", name:"일반문의", count:2, detail:[{name:"기타",count:1,small:[["단순문의",1]]},{name:"건의사항",count:1,small:[["개선요청",1]]}]}
   ].sort((a,b)=>b.count-a.count);
   const categories = [
     {key:"cat-1", name:"광고", total:283, medium:[
@@ -751,12 +751,61 @@
   // ---- W37 reference-value breakdown (대분류별 증감 표와 같은 행 UI 재사용) ----
   const w37t = document.getElementById("w37Table");
   w37.forEach(w=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML =
-      "<td><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+w.key+")\"></span></td>"+
+    const mainRow = document.createElement("tr");
+    mainRow.style.cursor = "pointer";
+    mainRow.innerHTML =
+      "<td><span class=\"toggle-arrow\" style=\"display:inline-block;width:11px;color:var(--ink-3);font-size:10px;\">▸</span><span class=\"dot\" style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--"+w.key+")\"></span></td>"+
       "<td><b>"+w.name+"</b></td>"+
       "<td class=\"num\">"+w.count+"건</td>";
-    w37t.appendChild(tr);
+    w37t.appendChild(mainRow);
+
+    const subRow = document.createElement("tr");
+    subRow.hidden = true;
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.style.background = "var(--surface-2)";
+    td.style.padding = "8px 4px";
+
+    const wrap = document.createElement("div");
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+
+    (w.detail||[]).forEach(m=>{
+      const mRow = document.createElement("div");
+      mRow.style.cursor = "pointer";
+      mRow.style.padding = "6px 8px";
+      mRow.style.fontSize = "12.5px";
+      mRow.style.color = "var(--ink-2)";
+      mRow.innerHTML = "<span class=\"toggle2\" style=\"display:inline-block;width:14px;color:var(--ink-3);font-size:10px;\">▸</span>"+
+        "<b class=\"mono\" style=\"color:var(--ink-1);\">"+m.count+"</b>건 · "+m.name;
+      wrap.appendChild(mRow);
+
+      const sDiv = document.createElement("div");
+      sDiv.style.display = "none";
+      sDiv.style.padding = "4px 8px 10px 30px";
+      sDiv.style.flexWrap = "wrap";
+      sDiv.style.gap = "6px 16px";
+      sDiv.style.fontSize = "12px";
+      sDiv.style.color = "var(--ink-3)";
+      sDiv.innerHTML = m.small.map(([sn,sc])=>"<span><b class=\"mono\">"+sc+"</b>건 · "+sn+"</span>").join("");
+      wrap.appendChild(sDiv);
+
+      mRow.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const willShow = sDiv.style.display === "none";
+        sDiv.style.display = willShow ? "flex" : "none";
+        mRow.querySelector(".toggle2").textContent = willShow ? "▾" : "▸";
+      });
+    });
+
+    td.appendChild(wrap);
+    subRow.appendChild(td);
+    w37t.appendChild(subRow);
+
+    mainRow.addEventListener("click", ()=>{
+      subRow.hidden = !subRow.hidden;
+      mainRow.querySelector(".toggle-arrow").textContent = subRow.hidden ? "▸" : "▾";
+    });
   });
 
   // ---- Week table ----
