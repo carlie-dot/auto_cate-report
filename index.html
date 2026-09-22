@@ -326,7 +326,7 @@
     <h1 class="font-display">주간 카테고리 증감 리포트</h1>
     <div class="meta">
       <span>비교 <b class="mono">W37(9/7~9/13)</b> vs <b class="mono">W38(9/14~9/20)</b></span>
-      <span>갱신일 <b class="mono">2026-09-21</b></span>
+      <span>갱신일 <b class="mono">2026-09-22</b></span>
     </div>
   </header>
 
@@ -378,7 +378,7 @@
     </div>
     <div class="legend-row" style="margin-top:14px; align-items:center;">
       <span class="status info" style="flex:none;">참고치</span>
-      <span>다음 주(W39, 9/21~9/27)는 오늘(9/21) 막 시작돼 아직 집계된 데이터가 없습니다 — 데이터가 쌓이는 대로 참고치로 표시합니다.</span>
+      <span>다음 주(W39, 9/21~9/27)는 아직 진행 중입니다 — 지금까지 9/21 하루치(25건)만 반영된 참고치이며, 완결되면(9/28 이후) 정식 비교로 전환됩니다.</span>
     </div>
     <div class="table-wrap" style="margin-top:8px;">
       <table>
@@ -410,14 +410,14 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>일별 문의 추이 — 2026년 8월 1일 ~ 9월 20일<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계 · W37(9/7~9/13)·W38(9/14~9/20)은 완결된 주로 정식 비교에 포함됩니다(단 W38은 9/18·9/19 데이터 누락 의심) · 9/18·9/19는 원본 파일이 없어 그래프에서 비어 있습니다</span></span></h2>
+      <h2>일별 문의 추이 — 2026년 8월 1일 ~ 9월 21일<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계 · W37(9/7~9/13)·W38(9/14~9/20)은 완결된 주로 정식 비교에 포함됩니다(단 W38은 9/18·9/19 데이터 누락 의심) · W39(9/21~)는 진행 중이라 참고치입니다 · 9/18·9/19는 원본 파일이 없어 그래프에서 비어 있습니다</span></span></h2>
     </div>
     <div class="date-filter">
       <label>기간 <input type="date" id="dailyStart"> ~ <input type="date" id="dailyEnd"></label>
       <button type="button" id="dailyReset">최근 30일</button>
     </div>
     <div class="chart-wrap">
-      <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 1일~9월 20일 일별 VOC 문의 건수 추이"></svg>
+      <svg class="chart" id="dailyChart" viewBox="0 0 760 250" role="img" aria-label="2026년 8월 1일~9월 21일 일별 VOC 문의 건수 추이"></svg>
       <div class="tooltip" id="tooltip" hidden></div>
     </div>
     <div class="legend-row">
@@ -442,7 +442,7 @@
 
   <footer>
     원본 문서: <code>docs/PRD.md</code> · <code>docs/TRD.md</code> · <code>docs/PLAN.md</code> · <code>docs/CATEGORY_TAXONOMY.md</code> · <code>docs/LOG.md</code><br>
-    분류 결과 파일: <code>voc/20260801-20260831_classified.csv</code>, <code>voc/20260901-20260906_classified.csv</code>, <code>voc/20260907_classified.csv</code>, <code>voc/20260908-20260909_classified.csv</code>, <code>voc/20260910_classified.csv</code>, <code>voc/20260911_classified.csv</code>, <code>voc/20260912_classified.csv</code>, <code>voc/20260913_classified.csv</code>, <code>voc/20260914_classified.csv</code>, <code>voc/20260915_classified.csv</code>, <code>voc/20260916_classified.csv</code>, <code>voc/20260917_classified.csv</code>, <code>voc/20260920_classified.csv</code> (원본은 그대로 보존, 사본에 카테고리만 채움. 9/18·9/19는 원본 파일 자체가 없어 목록에 없음 — 위 데이터 누락 배너 참고)<br>
+    분류 결과 파일: <code>voc/20260801-20260831_classified.csv</code>, <code>voc/20260901-20260906_classified.csv</code>, <code>voc/20260907_classified.csv</code>, <code>voc/20260908-20260909_classified.csv</code>, <code>voc/20260910_classified.csv</code>, <code>voc/20260911_classified.csv</code>, <code>voc/20260912_classified.csv</code>, <code>voc/20260913_classified.csv</code>, <code>voc/20260914_classified.csv</code>, <code>voc/20260915_classified.csv</code>, <code>voc/20260916_classified.csv</code>, <code>voc/20260917_classified.csv</code>, <code>voc/20260920_classified.csv</code>, <code>voc/20260921_classified.csv</code> (원본은 그대로 보존, 사본에 카테고리만 채움. 9/18·9/19는 원본 파일 자체가 없어 목록에 없음 — 위 데이터 누락 배너 참고)<br>
     검증 방법: 서브에이전트가 배치별로 분류 → 구조 검증(누락/중복/카테고리명 유효성) 통과 → 총 53건 사람 샘플 검수(8월분 오분류 2건 수정, 9월분 오분류 없음). 전수 정답 검증은 아직 없습니다. 9/15분(13건)·9/16분(7건)·9/17분(15건)·9/20분(6건)은 이번 무인 실행들에서 직접 분류·구조 검증했고, 아직 별도 사람 샘플 검수는 하지 않았습니다.
   </footer>
 
@@ -469,7 +469,8 @@
     ["09-12",8,"앱 오류 · 실행 오류(화면 멈춤) 2건(25%)"],["09-13",3,"계정·로그인 · 로그인 오류(인증 실패) 1건(33%)"],["09-14",12,"교환 · 현금교환(계좌 문의) 5건(42%)"],
     ["09-15",13,"일반문의 · 건의사항(개선요청) 2건(15%)"],["09-16",7,"교환 · 현금교환(계좌 문의) 2건(29%)"],
     ["09-17",15,"광고 · 보상 누락(초기화 반복) 3건(20%)"],
-    ["09-20",6,"광고 · 시청 불가(로딩 실패) 4건(67%)"]
+    ["09-20",6,"광고 · 시청 불가(로딩 실패) 4건(67%)"],
+    ["09-21",25,"계정·로그인 · 계정 변경(기기변경) 4건(16%)"]
   ];
   const weeks = [
     {w:31, range:"08-01 ~ 08-02", days:2, n:34, note:"부분 주(월요일 이전 2일치만)", cls:"partial"},
@@ -479,7 +480,8 @@
     {w:35, range:"08-24 ~ 08-30", days:7, n:80, note:"", cls:""},
     {w:36, range:"08-31 ~ 09-06", days:7, n:235, note:"9/3 급증(144건) 포함", cls:"spike"},
     {w:37, range:"09-07 ~ 09-13", days:7, n:88, note:"9/9에 교환 17건 집중(그 날의 61%, KB증권 계좌 관련으로 추정) — 8/14·9/3급 이상치는 아님. 완결된 주 — 이번 비교의 \"그 전 주\"", cls:""},
-    {w:38, range:"09-14 ~ 09-20", days:7, n:53, note:"완결된 주 — 이번 비교의 \"지난 주\". 단 9/18·9/19 원본 데이터 파일 자체가 없어(오큐파이 수집 갭 추정) 실제 건수는 이보다 많았을 가능성 있음 — 확인 필요", cls:"spike"}
+    {w:38, range:"09-14 ~ 09-20", days:7, n:53, note:"완결된 주 — 이번 비교의 \"지난 주\". 단 9/18·9/19 원본 데이터 파일 자체가 없어(오큐파이 수집 갭 추정) 실제 건수는 이보다 많았을 가능성 있음 — 확인 필요", cls:"spike"},
+    {w:39, range:"09-21 ~ 09-27", days:1, n:25, note:"부분 주(월요일 하루치만, 진행 중) — 아직 완결 전이라 정식 비교 대상 아님, 참고치로만 표시", cls:"partial"}
   ];
   // W37(그 전 주) vs W38(지난 주, 이번 갱신부터 완결). 필드명은 w35/w36으로 남아 있지만
   // 실제 값은 W37(old)/W38(new)입니다 — 렌더링 코드가 이 필드명을 그대로 참조하므로 이름은 유지.
@@ -494,8 +496,17 @@
     {key:"cat-3", name:"걸음수", w35:0, w36:2, detail:[{name:"보상 누락",w35:0,w36:1,small:[["미지급",0,1]]},{name:"연동 오류",w35:0,w36:1,small:[["(미지정)",0,1]]}]}
   ].sort((a,b)=>(b.w36-b.w35)-(a.w36-a.w35));
 
-  // W39(다음 주, 9/21~) - 오늘(9/21) 막 시작. 아직 집계된 데이터 없음(0건) — 참고치 표 비움.
-  const w37 = [];
+  // W39(다음 주, 9/21~9/27) - 9/21 하루치(25건) 반영, 아직 진행 중인 주라 참고치.
+  const w37 = [
+    {key:"cat-4", name:"계정·로그인", count:6, detail:[{name:"계정 변경",count:4,small:[["기기변경",4]]},{name:"로그인 오류",count:1,small:[["인증 실패",1]]},{name:"탈퇴",count:1,small:[["절차 문의",1]]}]},
+    {key:"cat-5", name:"교환", count:5, detail:[{name:"현금교환",count:4,small:[["계좌 문의",4]]},{name:"상품권",count:1,small:[["유효기간 만료",1]]}]},
+    {key:"cat-3", name:"걸음수", count:4, detail:[{name:"측정 오류",count:2,small:[["미반영",2]]},{name:"연동 오류",count:1,small:[["(미지정)",1]]},{name:"보상 누락",count:1,small:[["미지급",1]]}]},
+    {key:"cat-8", name:"혜택", count:3, detail:[{name:"버니상회(쇼핑요정지피)",count:2,small:[["사용법 문의",1],["(미지정)",1]]},{name:"버니로또",count:1,small:[["응모 누락",1]]}]},
+    {key:"cat-2", name:"코인·포인트", count:2, detail:[{name:"잔액 변동",count:2,small:[["원인 문의",2]]}]},
+    {key:"cat-6", name:"앱 오류", count:2, detail:[{name:"성능 저하",count:1,small:[["(미지정)",1]]},{name:"실행 오류",count:1,small:[["강제 종료",1]]}]},
+    {key:"cat-7", name:"일반문의", count:2, detail:[{name:"기타",count:2,small:[["단순문의",2]]}]},
+    {key:"cat-1", name:"광고", count:1, detail:[{name:"이용 불만",count:1,small:[["시간 과다",1]]}]}
+  ];
   const monthlyCategories = {
     "2026-08": {
       label: "2026년 8월", complete: true, note: "2026-08-01~08-31, 514건",
@@ -548,46 +559,49 @@
       ]
     },
     "2026-09": {
-      label: "2026년 9월", complete: false, note: "2026-09-01~09-20 기준(9/18·9/19 원본 파일 없음 — 오큐파이 수집 갭 추정), 368건 누적",
+      label: "2026년 9월", complete: false, note: "2026-09-01~09-21 기준(9/18·9/19 원본 파일 없음 — 오큐파이 수집 갭 추정), 393건 누적",
       categories: [
-        {key:"cat-1", name:"광고", total:214, medium:[
+        {key:"cat-1", name:"광고", total:215, medium:[
           {name:"보상 누락", count:165, small:[["초기화 반복",87],["적립 미반영",74],["(미지정)",4]]},
           {name:"재생 중단", count:18, small:[["진행 멈춤",14],["종료 버튼 미노출",3],["(미지정)",1]]},
           {name:"시청 불가", count:16, small:[["로딩 실패",11],["특정 매체 오류",5]]},
-          {name:"이용 불만", count:15, small:[["시간 과다",6],["부적절한 소재",5],["노출 빈도 과다",4]]}
+          {name:"이용 불만", count:16, small:[["시간 과다",7],["부적절한 소재",5],["노출 빈도 과다",4]]}
         ]},
-        {key:"cat-5", name:"교환", total:78, medium:[
-          {name:"현금교환", count:66, small:[["계좌 문의",37],["미입금",26],["(미지정)",3]]},
-          {name:"상품권", count:6, small:[["유효기간 만료",2],["등록 불가",2],["(미지정)",2]]},
+        {key:"cat-5", name:"교환", total:83, medium:[
+          {name:"현금교환", count:70, small:[["계좌 문의",41],["미입금",26],["(미지정)",3]]},
+          {name:"상품권", count:7, small:[["유효기간 만료",3],["등록 불가",2],["(미지정)",2]]},
           {name:"암호화폐", count:4, small:[["거래소 연동",3],["(미지정)",1]]},
           {name:"(미지정)", count:1, small:[["(미지정)",1]]},
           {name:"교환 불가", count:1, small:[["품절",1]]}
         ]},
-        {key:"cat-4", name:"계정·로그인", total:28, medium:[
-          {name:"로그인 오류", count:18, small:[["가입화면 반복",7],["인증 실패",6],["(미지정)",5]]},
-          {name:"계정 변경", count:10, small:[["기기변경",8],["(미지정)",1],["정보 수정",1]]}
+        {key:"cat-4", name:"계정·로그인", total:34, medium:[
+          {name:"로그인 오류", count:19, small:[["가입화면 반복",7],["인증 실패",7],["(미지정)",5]]},
+          {name:"계정 변경", count:14, small:[["기기변경",12],["(미지정)",1],["정보 수정",1]]},
+          {name:"탈퇴", count:1, small:[["절차 문의",1]]}
         ]},
-        {key:"cat-2", name:"코인·포인트", total:15, medium:[
+        {key:"cat-2", name:"코인·포인트", total:17, medium:[
           {name:"소멸", count:10, small:[["기준 문의",5],["복구 요청",5]]},
-          {name:"잔액 변동", count:4, small:[["원인 문의",4]]},
+          {name:"잔액 변동", count:6, small:[["원인 문의",6]]},
           {name:"적립 누락", count:1, small:[["(미지정)",1]]}
         ]},
-        {key:"cat-8", name:"혜택", total:13, medium:[
-          {name:"버니상회(쇼핑요정지피)", count:7, small:[["(미지정)",3],["적립 누락",2],["사용법 문의",2]]},
+        {key:"cat-8", name:"혜택", total:16, medium:[
+          {name:"버니상회(쇼핑요정지피)", count:9, small:[["(미지정)",4],["사용법 문의",3],["적립 누락",2]]},
+          {name:"버니로또", count:3, small:[["응모 누락",2],["지급방식 문의",1]]},
           {name:"고양이빵집", count:2, small:[["(미지정)",2]]},
-          {name:"얼음지피", count:2, small:[["(미지정)",2]]},
-          {name:"버니로또", count:2, small:[["응모 누락",1],["지급방식 문의",1]]}
+          {name:"얼음지피", count:2, small:[["(미지정)",2]]}
         ]},
-        {key:"cat-7", name:"일반문의", total:9, medium:[
-          {name:"기타", count:5, small:[["단순문의",5]]},
+        {key:"cat-7", name:"일반문의", total:11, medium:[
+          {name:"기타", count:7, small:[["단순문의",7]]},
           {name:"건의사항", count:4, small:[["개선요청",4]]}
         ]},
-        {key:"cat-3", name:"걸음수", total:6, medium:[
-          {name:"보상 누락", count:5, small:[["미지급",5]]},
-          {name:"연동 오류", count:1, small:[["(미지정)",1]]}
+        {key:"cat-3", name:"걸음수", total:10, medium:[
+          {name:"보상 누락", count:6, small:[["미지급",6]]},
+          {name:"측정 오류", count:2, small:[["미반영",2]]},
+          {name:"연동 오류", count:2, small:[["(미지정)",2]]}
         ]},
-        {key:"cat-6", name:"앱 오류", total:5, medium:[
-          {name:"실행 오류", count:5, small:[["화면 멈춤",4],["(미지정)",1]]}
+        {key:"cat-6", name:"앱 오류", total:7, medium:[
+          {name:"실행 오류", count:6, small:[["화면 멈춤",4],["(미지정)",1],["강제 종료",1]]},
+          {name:"성능 저하", count:1, small:[["(미지정)",1]]}
         ]}
       ]
     }
@@ -712,7 +726,7 @@
   }
   const dataMinISO = toISO(dailyAll[0][0]);
   const dataMaxISO = toISO(dailyAll[dailyAll.length-1][0]);
-  const REPORT_TODAY = "2026-09-21"; // 리포트 갱신일 기준 "오늘" (뷰어 기기 날짜에 좌우되지 않게 고정)
+  const REPORT_TODAY = "2026-09-22"; // 리포트 갱신일 기준 "오늘" (뷰어 기기 날짜에 좌우되지 않게 고정)
   const default30Start = addDaysISO(REPORT_TODAY, -30);
   const defaultStart = default30Start > dataMinISO ? default30Start : dataMinISO;
   const defaultEnd = REPORT_TODAY < dataMaxISO ? REPORT_TODAY : dataMaxISO;
