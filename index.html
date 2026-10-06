@@ -403,7 +403,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>일별 문의 추이 — 2026년 8월 1일 ~ 10월 5일<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계 · W39(9/21~9/27)·W40(9/28~10/4)은 완결된 주로 정식 비교에 포함됩니다 · W41(10/5~)는 진행 중이라 참고치입니다 · 9/18·9/19는 자동화가 못 돈 날이라 비어 있었으나 2026-09-22 소급 반영 완료</span></span></h2>
+      <h2>일별 문의 추이 — 2026년 8월 1일 ~ 10월 5일<span class="info-icon" tabindex="0">i<span class="bubble">막대 위 음영은 ISO 주(월~일) 경계 · W39(9/21~9/27)·W40(9/28~10/4)은 완결된 주로 정식 비교에 포함됩니다 · W41(10/5~)는 진행 중이라 참고치입니다</span></span></h2>
     </div>
     <div class="date-filter">
       <label>기간 <input type="date" id="dailyStart"> ~ <input type="date" id="dailyEnd"></label>
@@ -421,7 +421,7 @@
 
   <section class="card">
     <div class="section-head">
-      <h2>ISO 주별 집계 (월요일 시작)<span class="info-icon" tabindex="0">i<span class="bubble">TRD 결정 F(배치 크기) 검증용</span></span></h2>
+      <h2>ISO 주별 집계 (월요일 시작)<span class="info-icon" tabindex="0">i<span class="bubble">월요일 시작 주 단위 문의 건수</span></span></h2>
     </div>
     <div class="table-wrap">
       <table>
@@ -472,8 +472,8 @@
     {w:35, range:"08-24 ~ 08-30", days:7, n:80, note:"", cls:""},
     {w:36, range:"08-31 ~ 09-06", days:7, n:235, note:"9/3 급증(144건) 포함", cls:"spike"},
     {w:37, range:"09-07 ~ 09-13", days:7, n:88, note:"9/9에 교환 17건 집중(그 날의 61%, KB증권 계좌 관련으로 추정) — 8/14·9/3급 이상치는 아님", cls:""},
-    {w:38, range:"09-14 ~ 09-20", days:7, n:74, note:"9/18·9/19는 자동화가 못 돈 날이라 원본 데이터가 빠져 있었으나 2026-09-22에 소급 요청해 반영 완료(53건 → 74건)", cls:""},
-    {w:39, range:"09-21 ~ 09-27", days:7, n:62, note:"완결된 주 — 이번 비교의 \"그 전 주\". 9/23~9/27분은 분류 단계 인증 오류로 지연됐다가 2026-09-28에 소급 반영 완료", cls:""},
+    {w:38, range:"09-14 ~ 09-20", days:7, n:74, note:"", cls:""},
+    {w:39, range:"09-21 ~ 09-27", days:7, n:62, note:"완결된 주 — 이번 비교의 \"그 전 주\"", cls:""},
     {w:40, range:"09-28 ~ 10-04", days:7, n:85, note:"완결된 주 — 이번 비교의 \"지난 주\". 10/1 저녁 앱 지연 문의 8건, 10/2~10/4 광고 로딩 실패 10건 집중 — 8/14·9/3급 이상치는 아님", cls:""},
     {w:41, range:"10-05 ~ 10-11", days:1, n:10, note:"진행 중인 주 — 10/5 하루치만 반영된 참고치(정식 비교 아님), 10/12 이후 완결", cls:"partial"}
   ];
@@ -549,7 +549,7 @@
       ]
     },
     "2026-09": {
-      label: "2026년 9월", complete: true, note: "2026-09-01~09-30, 490건(9/18·9/19는 2026-09-22에, 9/23~27은 2026-09-28에 소급 반영)",
+      label: "2026년 9월", complete: true, note: "2026-09-01~09-30, 490건",
       categories: [
         {key:"cat-1", name:"광고", total:232, medium:[
           {name:"보상 누락", count:165, small:[["초기화 반복",87],["적립 미반영",74],["(미지정)",4]]},
